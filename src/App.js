@@ -13,12 +13,16 @@ import {
 import React, {useState } from 'react';
 import MenuItem from 'antd/lib/menu/MenuItem';
 import {Route,  BrowserRouter as Router, Switch, Link, useRouteMatch, Redirect } from 'react-router-dom';
+import Simplex from './components/methods/simplex/Simplex';
+import Dev from './components/Dev';
+
 
 // const { Header, Sider, Content } = Layout;
 const { Header, Content, Footer, Sider } = Layout;
 
 function App() {
 
+  
   
   return (
     <Router>
@@ -45,7 +49,7 @@ function App() {
           <MethodOptimize />
         </Route>
         <Route path="/сomputergraphics">
-          <About />
+         <Dev/>
         </Route>
         <Route>
           <Redirect to="/optimizationmethods" ></Redirect>
@@ -60,10 +64,6 @@ function App() {
   );
 }
 
-function About() {
-  return <h2>About</h2>;
-}
-
 function MethodOptimize() {
   let match = useRouteMatch();
   const [collapsed, setCollapsed] = useState(false);
@@ -73,20 +73,19 @@ function MethodOptimize() {
          <Content style={{ padding: '0 50px' }}>
           <Breadcrumb style={{ margin: '16px 0' }}>
             <Breadcrumb.Item>Методы оптимизации</Breadcrumb.Item>
-            <Breadcrumb.Item>App</Breadcrumb.Item>
+            <Breadcrumb.Item>Simplex</Breadcrumb.Item>
           </Breadcrumb>
           <Layout className="site-layout-background" style={{ padding: '24px 0' }}>
-            <Sider collapsed={collapsed} className="site-layout-background" width={300}>
+            <Sider collapsed={collapsed} className="site-layout-background" width={265}>
               <Menu 
                 mode="inline"
-                defaultSelectedKeys={['1']}
+                defaultSelectedKeys={['2']}
                 style={{ height: '100%' }}
               >
                 {collapsed ?  
                 <Menu.Item className='trigger' onClick={toggle} icon={<RightOutlined/>} /> :
                 <MenuItem className='trigger'onClick={toggle} icon={<LeftOutlined /> }/>
                 }
-              
                 <Menu.Item key="1" icon={<AppstoreAddOutlined  />}>
                   <Link to={`${match.url}/artificial`}> Метод искусственного базиса</Link>
                 </Menu.Item>
@@ -100,17 +99,19 @@ function MethodOptimize() {
               </Menu>
             </Sider>
             <Content style={{ padding: '0 24px', minHeight: "75vh" }}>
+            
             <Switch>
               <Route exact path={`${match.url}/artificial`}>
-                <div>artificial</div>
+                <Dev/>
               </Route>
               <Route exact path={`${match.url}/simplex`}>
-                <div>Simplex</div>
+                <Simplex/>
               </Route>
               <Route exact path={`${match.url}/visual`}>
-                <div> Visual </div>
+               <Dev/>
               </Route>
             </Switch>
+            
             </Content>
           </Layout>
         </Content> 
