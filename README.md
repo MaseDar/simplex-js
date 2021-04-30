@@ -3,12 +3,11 @@
 ##Ready|Total 
 1%/100%
 
-Visit site [Simplex][1] to use. 
-[1]: https://unicmo.vercel.app "https://unicmo.vercel.app"
+Visit site https://unicmo.vercel.app to use. 
 
 ## RoadMap
 
-###Main 
+### Main 
 - [ ] Saving the entered task to a file and reading from the file.
 - [ ] Possibility of solving the problem using the given basic variables.
 - [ ] Implementation of the artificial basis method.
@@ -31,13 +30,13 @@ Visit site [Simplex][1] to use.
 
 
 # Симплекс метод | Метод искусственного базиса | Графический метод
-##Сделано|Итого 
+## Сделано|Итого 
 1%|100%
 
-Посетите сайт [Simplex][1] для использования данных методов. 
-[1]: https://unicmo.vercel.app "https://unicmo.vercel.app"
+Посетите сайт https://unicmo.vercel.app для использования данных методов. 
 
-###Главные:
+
+### Главные:
 - [ ] Возможность диалогового ввода размерности задачи и матрицы коэффициентов целевой функции в канонической форме. Размерность не более 16*16.
 - [ ] Сохранение введённой задачи в файл и чтение из файла.
 - [ ] Возможность решения задачи с использованием заданных базисных переменных.
@@ -51,7 +50,7 @@ Visit site [Simplex][1] to use.
 - [ ] Поддержка мыши.
 - [ ] Контроль данных (защита от «дурака»).
 
-###Дополнительные:
+### Дополнительные:
 - [ ] Графический двумерный метод решения.
 - [ ] Графический трёхмерный метод решения.
 - [ ] Графический метод решения целочисленной задачи.
