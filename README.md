@@ -1,6 +1,6 @@
 # Simplex Method | Artificial basis method | Graphical method
 
-##Ready|Total 
+## Ready|Total 
 1%/100%
 
 Visit site https://unicmo.vercel.app to use. 
