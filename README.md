@@ -1,70 +1,58 @@
-# Getting Started with Create React App
+# Simplex Method | Artificial basis method | Graphical method
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Ready|Total 
+1%/100%
 
-## Available Scripts
+Visit site https://unicmo.vercel.app to use. 
 
-In the project directory, you can run:
+## RoadMap
 
-### `npm start`
+### Main 
+- [ ] Saving the entered task to a file and reading from the file.
+- [ ] Possibility of solving the problem using the given basic variables.
+- [ ] Implementation of the artificial basis method.
+- [ ] Selection of automatic and step-by-step mode for solving the problem.
+- [ ] In step-by-step mode, the ability to go back.
+- [ ] In step-by-step mode, the ability to select a reference element.
+- [ ] Working with common and decimal fractions.
+- [ ] Reference.
+- [ ] Context sensitive help.
+- [ ] Mouse support.
+- [ ] Data control (protection from the "fool").
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Bonuses:
+- [ ] Graphical two-dimensional solution method.
+- [ ] Graphical three-dimensional solution method.
+- [ ] A graphical method for solving an integer problem.
+- [ ] Solution of a dual problem.
+- [ ] Gomori\`s method for solving an integer problem.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# Симплекс метод | Метод искусственного базиса | Графический метод
+## Сделано|Итого 
+1%|100%
 
-### `npm run build`
+Посетите сайт https://unicmo.vercel.app для использования данных методов. 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Главные:
+- [ ] Возможность диалогового ввода размерности задачи и матрицы коэффициентов целевой функции в канонической форме. Размерность не более 16*16.
+- [ ] Сохранение введённой задачи в файл и чтение из файла.
+- [ ] Возможность решения задачи с использованием заданных базисных переменных.
+- [ ] Реализация метода искусственного базиса.
+- [ ] Выбор автоматического и пошагового режима решения задачи.
+- [ ] В пошаговом режиме возможность возврата назад.
+- [ ] В пошаговом режиме возможность выбора опорного элемента. 
+- [ ] Работа с обыкновенными и десятичными дробями.
+- [ ] Справка.
+- [ ]  Контекстно-зависимая помощь.
+- [ ] Поддержка мыши.
+- [ ] Контроль данных (защита от «дурака»).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Дополнительные:
+- [ ] Графический двумерный метод решения.
+- [ ] Графический трёхмерный метод решения.
+- [ ] Графический метод решения целочисленной задачи.
+- [ ] Решение двойственной задачи.
+- [ ] Метод Гомори решения целочисленной задачи.
