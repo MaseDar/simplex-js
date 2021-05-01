@@ -16,13 +16,10 @@ import {Route,  BrowserRouter as Router, Switch, Link, useRouteMatch, Redirect }
 import Simplex from './components/methods/simplex/Simplex';
 import Dev from './components/Dev';
 
-
-// const { Header, Sider, Content } = Layout;
 const { Header, Content, Footer, Sider } = Layout;
 
 function App() {
-
-  
+ 
   
   return (
     <Router>
@@ -79,7 +76,7 @@ function MethodOptimize() {
             <Sider collapsed={collapsed} className="site-layout-background" width={265}>
               <Menu 
                 mode="inline"
-                defaultSelectedKeys={['2']}
+                defaultSelectedKeys={['0']}
                 style={{ height: '100%' }}
               >
                 {collapsed ?  
