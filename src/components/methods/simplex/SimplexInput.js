@@ -1,6 +1,6 @@
 import React, {  useState } from 'react';
-import { Form, InputNumber, Select } from 'antd';
-
+import { Button, Form, InputNumber, Select } from 'antd';
+import startSolution from './simplexAlgrothm'
 import Title from 'antd/lib/typography/Title';
 
 const { Option } = Select;
@@ -14,6 +14,10 @@ function SimplexInput(){
     const [wInputs, setWIntputs] = useState(70)
     let tags = [];
     let restr = [];
+
+    function onStartSolution(){
+        startSolution(func,restrictions)
+    }
 
     function checkStyle(i){
         if (i !== 1)
@@ -198,11 +202,17 @@ function SimplexInput(){
                     </Title>
                     </div>
                 </Form.Item>
-                {minMax}
-                <br/>
-                {func}
-                <br/>
-
+                
+                <Form.Item>
+                    <Button 
+                        type="primary" 
+                        // htmlType="submit"
+                        // Не работает onClick
+                        onClick={e => onStartSolution()}
+                    >
+                        Решить задачу
+                    </Button>
+                </Form.Item>
             </Form>
         </div>
     )
