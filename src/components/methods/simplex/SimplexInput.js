@@ -217,4 +217,5 @@ function SimplexInput(){
         </div>
     )
 }
+
 export default SimplexInput;
