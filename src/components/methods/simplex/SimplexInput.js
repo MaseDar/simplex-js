@@ -16,7 +16,25 @@ function SimplexInput(){
     let restr = [];
 
     function onStartSolution(){
-        startSolution(func,restrictions)
+
+        for (let i = 0; i < countRestrictions; i++){
+            for (let j = 0; j < countVariables+1; j++){
+                
+                if (!restrictions[i])
+                    restrictions[i] = [];
+                
+                if (!restrictions[i][j])
+                    restrictions[i][j] = 0;
+                    
+            }
+        }
+
+        for (let i = 0; i < countVariables; i++){
+            if (!func[i])
+                func[i] = 0;
+        }
+
+        startSolution(countVariables, func, countRestrictions, restrictions, minMax)
     }
 
     function checkStyle(i){
@@ -207,7 +225,6 @@ function SimplexInput(){
                     <Button 
                         type="primary" 
                         // htmlType="submit"
-                        // Не работает onClick
                         onClick={e => onStartSolution()}
                     >
                         Решить задачу
