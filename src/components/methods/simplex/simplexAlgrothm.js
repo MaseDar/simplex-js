@@ -22,6 +22,7 @@ export default function startSolution(countVariables, func, countRestrictions, r
     // НАДО ФИКСИТЬ РЕШЕНИЕ В ГАУССЕ, А ТО ОСНОВУ НОРМ СЧИТАЕТ, А ответ (=b) нет!
     Solution(restrictions)
     let last = restrictions[0].length - 1;
+    
     console.log("res", restrictions)
     console.log("res[1][-1]", restrictions[1][last])
     

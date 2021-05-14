@@ -1,9 +1,11 @@
+let fixed = 4;
+
 function print(M, msg) {
-    console.log("======" + msg + "=========")
+    console.log("---------" + msg + "--------")
     for(var k=0; k<M.length; ++k) {
       console.log(M[k]);
     }
-    console.log("==========================")
+    // console.log("==========================")
   }
   
   function diagonalize(M, A) {
@@ -12,15 +14,15 @@ function print(M, msg) {
     for(var k=0; k<Math.min(m,n); ++k) {
       // Find the k-th pivot
       let i_max = findPivot(M, k);
-      if (A[i_max, k] == 0)
-        throw "matrix is singular";
+      if (!A[i_max][k])
+        throw new Error("matrix is singular");
       swap_rows(M, k, i_max, A);
       // Do for all rows below pivot
       for(var i=k+1; i<m; ++i) {
         // Do for all remaining elements in current row:
-        var c = A[i][k] / A[k][k];
+        var c = +(A[i][k] / A[k][k]).toFixed(fixed);
         for(var j=k+1; j<n; ++j) {
-          A[i][j] = A[i][j] - A[k][j] * c;
+          A[i][j] = +(A[i][j] - A[k][j] * c).toFixed(fixed);
         }
         // Fill lower triangular matrix with zeros
         A[i][k] = 0;
@@ -39,33 +41,35 @@ function print(M, msg) {
   }
   
   function swap_rows(M, i_max, k, A) {
-    if (i_max != k) {
+    if (i_max !== k) {
       var temp = A[i_max];
       A[i_max] = A[k];
       A[k] = temp;
     }
   }
   
-  function makeM(A, b) {
-    for(var i=0; i<A.length; ++i) {
-      A[i].push(b[i]);
-    }
-  }
-  
   function substitute(M) {
     var m = M.length;
-    for(var i=m-1; i>=0; --i) {
-      var x = M[i][m] / M[i][i];
-      for(var j=i-1; j>=0; --j) {
-        M[j][m] -= x * M[j][i];
-        M[j][i] = 0;
-      }
-      M[i][m] = x;
-      M[i][i] = 1;
+    let n = M[0].length
+    for (let i = m-1; i>=0; i--){
+        let coeff = M[i][i];
+        for(let k = 0; k < n; k++ )
+                if (!!M[i][k])
+                    M[i][k] = +(M[i][k] / coeff).toFixed(fixed);
     }
-  }
+    for(var i=m-1; i>=0; --i) {
+        
+      for(var j=i-1; j>=0; --j) {
+        var x = +(M[j][i] / M[i][i]).toFixed(fixed);
+          for(let k = 0; k < n; k++ ){
+              M[j][k] = +(M[j][k] - M[i][k] * x).toFixed(fixed);
+          }
+      } 
+    }
+    return M;
+}
   
-  function extractX(M, A) {
+  function extractX(A) {
     var x = [];
     var m = A.length;
     var n = A[0].length;
@@ -74,33 +78,25 @@ function print(M, msg) {
     }
     return x;
   }
+  function toFixedNumber(A){
+      for (let i = 0; i < A.length; i++)
+        for (let j = 0; j < A[0].length; j++){
+            A[i][j] = +(A[i][j]).toFixed(2);
+        }
+      return A;
+  }
   
   export default function Solution(A) {
-    //print(A, "A");
-    // makeM(A,b);
     //print(A, "M");
     diagonalize(A, A);
     //print(A, "diag");
-    substitute(A);
-    print(A, "subst");
-    var x = extractX(A, A);
+    let res = substitute(A);
+    // print(A, "subst");
+    let x = extractX(A);
+    res = toFixedNumber(res)
+    print(res, "RES")
     print(x, "x");
     return x;
   }
   
   // sample from: http://mathworld.wolfram.com/GaussianElimination.html
-  
-//   A = [
-//     [9,3,4],
-//     [4,3,4],
-//     [1,1,1]
-//   ]
-  
-//   b = [7,8,3]
-  
-//   print(A, " A ");
-//   print(b, " b ");
-  
-//   var x = solve(A, b);
-  
-//   print(x, " x ");

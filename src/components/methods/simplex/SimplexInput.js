@@ -43,24 +43,24 @@ function SimplexInput(){
         else 
             return {paddingLeft:wInputs/2}
     }
-
+ 
     function addRestrictions(i,j,value){
         let arr = restrictions;
         if(!arr[i])
             arr[i] = []
         arr[i][j] = value;
         setRestrictions([...arr]);
-        console.log(arr);
-        for (let i = 0; i < countRestrictions; i++){
-            for (let j = 0; j < countVariables+1; j++){
-                if (arr[i]){
-                    if (arr[i][j]===undefined) 
-                        console.log(`null: ${i} ${j} `,arr[i][j])
-                }
-                else 
-                    console.log(arr[i])
-            }
-        }
+        // console.log(arr);
+        // for (let i = 0; i < countRestrictions; i++){
+        //     for (let j = 0; j < countVariables+1; j++){
+        //         if (arr[i]){
+        //             // if (arr[i][j]===undefined) 
+        //                 // console.log(`null: ${i} ${j} `,arr[i][j])
+        //         }
+        //         else 
+        //             // console.log(arr[i])
+        //     }
+        // }
     }
 
     function funcRestrictions(){
@@ -91,7 +91,7 @@ function SimplexInput(){
                     defaultValue={0}
                   
                     onChange={e => {
-                        console.log(e);
+                        // console.log(e);
                         addRestrictions(i-1, j-1, e);
                     }}                 
                 /> :
@@ -133,7 +133,7 @@ function SimplexInput(){
         let arr = func;
         arr[key] = value;
         setFunc([...arr]);
-        console.log(arr);
+        // console.log(arr);
     }
 
     function intFunc(){
