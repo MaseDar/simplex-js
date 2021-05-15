@@ -18,12 +18,16 @@ export default function startSolution(countVariables, func, countRestrictions, r
     */
 
     // Пока решаем для минимума, т.к. позже можно будет перевести из максимума путем смены знаков.
-
-    // НАДО ФИКСИТЬ РЕШЕНИЕ В ГАУССЕ, А ТО ОСНОВУ НОРМ СЧИТАЕТ, А ответ (=b) нет!
-    Solution(restrictions)
-    let last = restrictions[0].length - 1;
     
-    console.log("res", restrictions)
-    console.log("res[1][-1]", restrictions[1][last])
+    //                        создает глубокую копию массива, но ппц долго
+    let afterGauss = Solution(JSON.parse(JSON.stringify(restrictions)));
+    
+    console.log("aftergauss:", afterGauss)
+    console.log("restrictions", restrictions)
+    
+    let last = restrictions[0].length - 1;
+
+    
+    
     
 }

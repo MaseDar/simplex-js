@@ -87,16 +87,16 @@ function print(M, msg) {
   }
   
   export default function Solution(A) {
-    //print(A, "M");
+    // print(A, "A");
     diagonalize(A, A);
     //print(A, "diag");
     let res = substitute(A);
     // print(A, "subst");
     let x = extractX(A);
     res = toFixedNumber(res)
-    print(res, "RES")
-    print(x, "x");
-    return x;
+    // print(res, "RES")
+    // print(x, "x");
+    return res;
   }
   
   // sample from: http://mathworld.wolfram.com/GaussianElimination.html

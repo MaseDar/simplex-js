@@ -34,6 +34,20 @@ function SimplexInput(){
                 func[i] = 0;
         }
 
+        // let newArr = [];
+        // for (let i = 0; i < countRestrictions; i++){
+        //     for (let j = 0; j < countVariables+1; j++){
+        //         if(!newArr[i])
+        //             newArr[i] = []
+        //         if (!newArr[i][j])
+        //             newArr[i][j] = []
+        //         newArr[i][j].push(restrictions[i][j]);
+        //     }
+            
+        // }
+        
+        // let helpArr =[]
+        // helpArr = JSON.parse(JSON.stringify(restrictions));
         startSolution(countVariables, func, countRestrictions, restrictions, minMax)
     }
 
