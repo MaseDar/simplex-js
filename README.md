@@ -1,13 +1,18 @@
 # Simplex Method | Artificial basis method | Graphical method
 
 ## Ready|Total 
-1%/100%
+7%/100%
 
-Visit site https://unicmo.vercel.app to use. 
+Visit site https://unicmo.vercel.app 
+or 
+clone/fork this repository and use React.js for debug and run app 
+> npm i
+> npm start
 
 ## RoadMap
 
 ### Main 
+- [x] Possibility of interactive input of the dimension of the problem and the matrix of the objective function coefficients in the canonical form. Dimension no more than 16 * 16.
 - [ ] Saving the entered task to a file and reading from the file.
 - [ ] Possibility of solving the problem using the given basic variables.
 - [ ] Implementation of the artificial basis method.
@@ -17,7 +22,7 @@ Visit site https://unicmo.vercel.app to use.
 - [ ] Working with common and decimal fractions.
 - [ ] Reference.
 - [ ] Context sensitive help.
-- [ ] Mouse support.
+- [x] Mouse support.
 - [ ] Data control (protection from the "fool").
 
 ### Bonuses:
@@ -31,13 +36,16 @@ Visit site https://unicmo.vercel.app to use.
 
 # Симплекс метод | Метод искусственного базиса | Графический метод
 ## Сделано|Итого 
-1%|100%
+7%|100%
 
-Посетите сайт https://unicmo.vercel.app для использования данных методов. 
-
+Посетите сайт https://unicmo.vercel.app для использования данных методов
+или
+склонируйте/форкните этот репозиторий и используйте React.js для запуска приложения
+> npm i
+> npm start
 
 ### Главные:
-- [ ] Возможность диалогового ввода размерности задачи и матрицы коэффициентов целевой функции в канонической форме. Размерность не более 16*16.
+- [x] Возможность диалогового ввода размерности задачи и матрицы коэффициентов целевой функции в канонической форме. Размерность не более 16*16.
 - [ ] Сохранение введённой задачи в файл и чтение из файла.
 - [ ] Возможность решения задачи с использованием заданных базисных переменных.
 - [ ] Реализация метода искусственного базиса.
@@ -47,7 +55,7 @@ Visit site https://unicmo.vercel.app to use.
 - [ ] Работа с обыкновенными и десятичными дробями.
 - [ ] Справка.
 - [ ]  Контекстно-зависимая помощь.
-- [ ] Поддержка мыши.
+- [x] Поддержка мыши.
 - [ ] Контроль данных (защита от «дурака»).
 
 ### Дополнительные:
@@ -56,3 +64,4 @@ Visit site https://unicmo.vercel.app to use.
 - [ ] Графический метод решения целочисленной задачи.
 - [ ] Решение двойственной задачи.
 - [ ] Метод Гомори решения целочисленной задачи.
+ 

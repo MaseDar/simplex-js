@@ -1,12 +1,4 @@
 let fixed = 4;
-
-function print(M, msg) {
-    console.log("---------" + msg + "--------")
-    for(var k=0; k<M.length; ++k) {
-      console.log(M[k]);
-    }
-    // console.log("==========================")
-  }
   
   function diagonalize(M, A) {
     var m = M.length;
@@ -14,8 +6,10 @@ function print(M, msg) {
     for(var k=0; k<Math.min(m,n); ++k) {
       // Find the k-th pivot
       let i_max = findPivot(M, k);
-      if (!A[i_max][k])
-        throw new Error("matrix is singular");
+      if (!A[i_max][k]){
+        alert("Матрица вырождена и рождена свыше")
+        return true;
+      }
       swap_rows(M, k, i_max, A);
       // Do for all rows below pivot
       for(var i=k+1; i<m; ++i) {
@@ -86,13 +80,15 @@ function print(M, msg) {
       return A;
   }
   
-  export default function Solution(A) {
+  export default function GaussSolution(A) {
     // print(A, "A");
-    diagonalize(A, A);
+    let error = diagonalize(A, A);
+    if (error)
+      return false;
     //print(A, "diag");
     let res = substitute(A);
     // print(A, "subst");
-    let x = extractX(A);
+    extractX(A);
     res = toFixedNumber(res)
     // print(res, "RES")
     // print(x, "x");

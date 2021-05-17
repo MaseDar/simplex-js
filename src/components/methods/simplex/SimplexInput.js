@@ -2,6 +2,11 @@ import React, {  useState } from 'react';
 import { Button, Form, InputNumber, Select } from 'antd';
 import startSolution from './simplexAlgrothm'
 import Title from 'antd/lib/typography/Title';
+import {
+    ExperimentOutlined,
+    HighlightOutlined
+  } from '@ant-design/icons';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
 
 const { Option } = Select;
 
@@ -10,8 +15,9 @@ function SimplexInput(){
     const [countRestrictions, setCountRestrictions] = useState(2);
     const [minMax, setMinMax] = useState("min");
     const [func, setFunc] = useState([]);
-    const [restrictions, setRestrictions] = useState([])
-    const [wInputs, setWIntputs] = useState(70)
+    const [restrictions, setRestrictions] = useState([]);
+    const [wInputs, setWIntputs] = useState(70);
+    const [basises, setBasises] = useState([]);
     let tags = [];
     let restr = [];
 
@@ -33,22 +39,14 @@ function SimplexInput(){
             if (!func[i])
                 func[i] = 0;
         }
-
-        // let newArr = [];
-        // for (let i = 0; i < countRestrictions; i++){
-        //     for (let j = 0; j < countVariables+1; j++){
-        //         if(!newArr[i])
-        //             newArr[i] = []
-        //         if (!newArr[i][j])
-        //             newArr[i][j] = []
-        //         newArr[i][j].push(restrictions[i][j]);
-        //     }
-            
-        // }
-        
-        // let helpArr =[]
-        // helpArr = JSON.parse(JSON.stringify(restrictions));
-        startSolution(countVariables, func, countRestrictions, restrictions, minMax)
+        // нет ререндера, но все работает ЧОТКО
+        // TODO: надо пофиксить баг с тем, что после выбора последнего элемента и повторного нажатия он не попадает в массив базисных
+        setBasises(basises.slice(0, countVariables-1))
+        for (let i = 0; i < countVariables; i++){
+            basises[i] = !basises[i] ? false : true;
+        }
+        console.log("basiseeees:", basises)
+        startSolution(countVariables, func, countRestrictions, restrictions, minMax, basises)
     }
 
     function checkStyle(i){
@@ -95,7 +93,7 @@ function SimplexInput(){
         );
         restr.push(<br/>);
         for(let i = 1; i<=countRestrictions; i++){
-            
+            // TODO: Надо пофикисить баг с изменением количества переменных и исчезают на морде числа, а массив остается
             for (let j = 1; j <= countVariables+1; j++)
             {
                 restr.push(
@@ -103,7 +101,6 @@ function SimplexInput(){
                     <InputNumber 
                     style={{maxWidth: wInputs}}
                     defaultValue={0}
-                  
                     onChange={e => {
                         // console.log(e);
                         addRestrictions(i-1, j-1, e);
@@ -175,73 +172,111 @@ function SimplexInput(){
         return tags;
     }
 
+    function addArrayBasis(i, value){
+        let old = basises;
+        console.log("old: ", old)
+        old[i] = value;
+        setBasises([...basises])
+        console.log("basises:", basises)
+    }
+
+    function onBasis(){
+        // TODO: Сделать проверку на добавление > допустимого (ставить везде disable)
+        let basises = []
+        for (let i = 0; i < countVariables; i++ ){
+                basises.push(
+                    <Checkbox onChange={e => addArrayBasis(i, e.target.checked)}>
+                        <Title level={4}>
+                             x <sub> {i+1} </sub>
+                        </Title>
+                    </Checkbox>)
+        }
+        return basises;
+    }
 
     return(
         <div>
             
-            <Form 
+            <Form
                 layout="vertical"
-            >
-                <Form.Item
-                    label="Количество переменных"
-                    name = "countVariables"
-                >
-                    <InputNumber 
-                        min="2" 
-                        max="16"
-                        defaultValue={4}
-                        onChange={e => setCountVariables(e)}
-                        style={{maxWidth:"50px"}}
-                    />
-                </Form.Item>
-                <Form.Item
-                    label="Количество ограничений"
-                    name = "countRestrictions"
-                >
-                    <InputNumber 
-                        min="2"
-                        max="16"
-                        defaultValue={2}
-                        onChange={e => setCountRestrictions(e)}
-                        style={{maxWidth:"50px"}}
-                    />
-                </Form.Item>
+            >   
 
-                <Form.Item
-                    label="Введите целевую функцию:"
-                >
-                    <Title level={4}>f(x) = {intFunc()} 
-                    </Title>
-                </Form.Item>
-
-                <Form.Item
-                    label="Введите ограничения"
-                >
-                    <div>
-                        Размер окон ввода: 
+                <Form.Item>
+                    <Form.Item
+                        label="Переменные"
+                        name = "countVariables"
+                        style={{ display: 'inline-block' }}
+                    >
+                        <InputNumber 
+                            min="2" 
+                            max="16"
+                            defaultValue={4}
+                            onChange={e => setCountVariables(e)}
+                            // style={{maxWidth:"50px"}}
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        label="Ограничения"
+                        name = "countRestrictions"
+                        style={{ display: 'inline-block', marginLeft: ' 8px' }}
+                    >
+                        <InputNumber 
+                            min="2"
+                            max="16"
+                            defaultValue={2}
+                            onChange={e => setCountRestrictions(e)}
+                            // style={{maxWidth:"50px"}}
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        label="Размер окон ввода: "
+                        style={{ display: 'inline-block', marginLeft: ' 8px' }}
+                    >
                         <InputNumber 
                             min="40"
                             max="90"
                             defaultValue={wInputs}
                             onChange={e => setWIntputs(e)}
-                            style={{maxWidth:"50px"}}
+                            style={{maxWidth:"60px"}}
                         />
-                        в px
-                    <Title
-                        level={4}
-                    >
-                    {funcRestrictions()}
+                    </Form.Item>
+                </Form.Item>
+                
+
+                <Form.Item label="Введите целевую функцию:" >
+                    <Title level={4}> f(x) = {intFunc()} </Title>
+                </Form.Item>
+                
+                <Form.Item label="Выберите базисные переменные:">
+                    {onBasis()} 
+                </Form.Item>
+
+
+                <Form.Item
+                    label="Введите ограничения:"
+                    style={{ display: 'inline-block'}}
+                >
+                    <Title level={4}>
+                        {funcRestrictions()}
                     </Title>
-                    </div>
                 </Form.Item>
                 
                 <Form.Item>
                     <Button 
                         type="primary" 
-                        // htmlType="submit"
                         onClick={e => onStartSolution()}
+                        icon = {<ExperimentOutlined />}
                     >
-                        Решить задачу
+                        Автоматическое решение
+                    </Button>
+
+                    <Button 
+                        type="primary" 
+                        onClick={e => onStartSolution()}
+                        icon = {<HighlightOutlined />}
+                        style={{marginLeft: "8px"}}
+                    >
+                        Ручное решение
                     </Button>
                 </Form.Item>
             </Form>
