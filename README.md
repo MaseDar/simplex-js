@@ -1,7 +1,7 @@
 # Simplex Method | Artificial basis method | Graphical method
 
 ## Ready|Total 
-7%/100%
+10%/100%
 
 Visit site https://unicmo.vercel.app 
 or 
@@ -15,7 +15,7 @@ clone/fork this repository and use React.js for debug and run app
 - [x] Possibility of interactive input of the dimension of the problem and the matrix of the objective function coefficients in the canonical form. Dimension no more than 16 * 16.
 - [ ] Saving the entered task to a file and reading from the file.
 - [ ] Possibility of solving the problem using the given basic variables.
-- [ ] Implementation of the artificial basis method.
+- [x] Implementation of the artificial basis method.
 - [ ] Selection of automatic and step-by-step mode for solving the problem.
 - [ ] In step-by-step mode, the ability to go back.
 - [ ] In step-by-step mode, the ability to select a reference element.
@@ -24,9 +24,9 @@ clone/fork this repository and use React.js for debug and run app
 - [ ] Context sensitive help.
 - [x] Mouse support.
 - [ ] Data control (protection from the "fool").
+- [ ] Graphical two-dimensional solution method.
 
 ### Bonuses:
-- [ ] Graphical two-dimensional solution method.
 - [ ] Graphical three-dimensional solution method.
 - [ ] A graphical method for solving an integer problem.
 - [ ] Solution of a dual problem.
@@ -36,7 +36,7 @@ clone/fork this repository and use React.js for debug and run app
 
 # Симплекс метод | Метод искусственного базиса | Графический метод
 ## Сделано|Итого 
-7%|100%
+10%|100%
 
 Посетите сайт https://unicmo.vercel.app для использования данных методов
 или
@@ -47,7 +47,7 @@ clone/fork this repository and use React.js for debug and run app
 ### Главные:
 - [x] Возможность диалогового ввода размерности задачи и матрицы коэффициентов целевой функции в канонической форме. Размерность не более 16*16.
 - [ ] Сохранение введённой задачи в файл и чтение из файла.
-- [ ] Возможность решения задачи с использованием заданных базисных переменных.
+- [x] Возможность решения задачи с использованием заданных базисных переменных.
 - [ ] Реализация метода искусственного базиса.
 - [ ] Выбор автоматического и пошагового режима решения задачи.
 - [ ] В пошаговом режиме возможность возврата назад.
@@ -57,9 +57,9 @@ clone/fork this repository and use React.js for debug and run app
 - [ ]  Контекстно-зависимая помощь.
 - [x] Поддержка мыши.
 - [ ] Контроль данных (защита от «дурака»).
+- [ ] Графический двумерный метод решения.
 
 ### Дополнительные:
-- [ ] Графический двумерный метод решения.
 - [ ] Графический трёхмерный метод решения.
 - [ ] Графический метод решения целочисленной задачи.
 - [ ] Решение двойственной задачи.
