@@ -4,11 +4,13 @@ import './test.css'
 import { Layout, Menu, Breadcrumb } from 'antd';
 
 import {
+  QuestionOutlined,
   RightOutlined,
   LeftOutlined,
   AppstoreAddOutlined,
   TableOutlined,
   AreaChartOutlined,
+  DotChartOutlined,
 } from '@ant-design/icons';
 import React, {useState } from 'react';
 import MenuItem from 'antd/lib/menu/MenuItem';
@@ -26,7 +28,7 @@ function App() {
       <Layout>
         <Header className="header">
           <div className="logo" />
-          
+          {/* TODO: пофиксить баг с ключами (при обновалении страницы не всегда та вкладка) */}
           <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
             <Menu.Item disabled key="0"> MaseDar </Menu.Item> 
           {/* <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/VK.com-logo.svg" style={{width:"24px", height: "24px"} } /> */}
@@ -46,7 +48,7 @@ function App() {
           <MethodOptimize />
         </Route>
         <Route path="/сomputergraphics">
-         <Dev/>
+         <ComputerGraphics/>
         </Route>
         <Route>
           <Redirect to="/optimizationmethods" ></Redirect>
@@ -60,6 +62,55 @@ function App() {
         
   );
 }
+
+function ComputerGraphics() {
+  let match = useRouteMatch();
+  const [collapsed, setCollapsed] = useState(false);
+  const toggle = () => setCollapsed(!collapsed);  
+
+  return (
+         <Content style={{ padding: '0 50px' }}>
+          <Breadcrumb style={{ margin: '16px 0' }}>
+            <Breadcrumb.Item>Компьютерная Графика</Breadcrumb.Item>
+            <Breadcrumb.Item>Алгоритмы</Breadcrumb.Item>
+          </Breadcrumb>
+          <Layout className="site-layout-background" style={{ padding: '24px 0' }}>
+            <Sider collapsed={collapsed} className="site-layout-background" width={265}>
+              <Menu 
+                mode="inline"
+                defaultSelectedKeys={['0']}
+                style={{ height: '100%' }}
+              >
+                {collapsed ?  
+                <Menu.Item className='trigger' onClick={toggle} icon={<RightOutlined/>} /> :
+                <MenuItem className='trigger'onClick={toggle} icon={<LeftOutlined /> }/>
+                }
+                <Menu.Item key="1" icon={<DotChartOutlined />}>
+                  <Link to={`${match.url}/print`}>Расторные Алгоритмы</Link>
+                </Menu.Item>
+                <Menu.Item key="2" icon={<QuestionOutlined />}>
+                  <Link to={`${match.url}/help`}>Справка</Link>
+                </Menu.Item>
+              </Menu>
+            </Sider>
+            <Content style={{ padding: '0 24px', minHeight: "75vh" }}>
+            
+            <Switch>
+              <Route exact path={`${match.url}/print`}>
+                <Dev/>
+              </Route>
+              <Route exact path={`${match.url}/help`}>
+                <Dev/>
+              </Route>
+            </Switch>
+            
+            </Content>
+          </Layout>
+        </Content> 
+  );
+}
+
+
 
 function MethodOptimize() {
   let match = useRouteMatch();
