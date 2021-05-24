@@ -1,6 +1,5 @@
-import './App.css';
 import 'antd/dist/antd.css'
-import './test.css'
+import './help.css'
 import { Layout, Menu, Breadcrumb } from 'antd';
 
 import {
@@ -11,12 +10,14 @@ import {
   TableOutlined,
   AreaChartOutlined,
   DotChartOutlined,
+  FireOutlined,
 } from '@ant-design/icons';
 import React, {useState } from 'react';
 import MenuItem from 'antd/lib/menu/MenuItem';
 import {Route,  BrowserRouter as Router, Switch, Link, useRouteMatch, Redirect } from 'react-router-dom';
 import Simplex from './components/methods/simplex/Simplex';
 import Dev from './components/Dev';
+import CGPage from './components/computerGraphics/CGPage';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -30,14 +31,14 @@ function App() {
           <div className="logo" />
           {/* TODO: пофиксить баг с ключами (при обновалении страницы не всегда та вкладка) */}
           <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
-            <Menu.Item disabled key="0"> MaseDar </Menu.Item> 
+            <Menu.Item disabled key="0" title="Молотков Влад" icon={<FireOutlined />}/> 
           {/* <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/VK.com-logo.svg" style={{width:"24px", height: "24px"} } /> */}
           
-            <Menu.Item key="1">
+            <Menu.Item key="1" title="Методы Оптимизации">
               <Link to="/optimizationmethods">Методы Оптимизации</Link>
             </Menu.Item>
             <Menu.Item key="2">
-              <Link to="/сomputergraphics">Компьютерная Графика</Link>
+              <Link to="/сomputergraphics" title="Компьютерная Графика">Компьютерная Графика</Link>
             </Menu.Item>
           
           </Menu>
@@ -86,7 +87,7 @@ function ComputerGraphics() {
                 <MenuItem className='trigger'onClick={toggle} icon={<LeftOutlined /> }/>
                 }
                 <Menu.Item key="1" icon={<DotChartOutlined />}>
-                  <Link to={`${match.url}/print`}>Расторные Алгоритмы</Link>
+                  <Link to={`${match.url}/dashboard`}>Доска</Link>
                 </Menu.Item>
                 <Menu.Item key="2" icon={<QuestionOutlined />}>
                   <Link to={`${match.url}/help`}>Справка</Link>
@@ -96,8 +97,8 @@ function ComputerGraphics() {
             <Content style={{ padding: '0 24px', minHeight: "75vh" }}>
             
             <Switch>
-              <Route exact path={`${match.url}/print`}>
-                <Dev/>
+              <Route exact path={`${match.url}/dashboard`}>
+                <CGPage/>
               </Route>
               <Route exact path={`${match.url}/help`}>
                 <Dev/>

@@ -1,6 +1,6 @@
 import React, {  useState } from 'react';
 import { Button, Form, InputNumber, Select } from 'antd';
-import startSolution from './simplexAlgrothm'
+import startSolution from './simplexAlgorithm'
 import Title from 'antd/lib/typography/Title';
 import {
     ExperimentOutlined,

@@ -5,6 +5,7 @@ export default function Simplex(){
     return(
         <div>
             <SimplexInput/>
+            {/* <SimplexTables/> */}
         </div>
     )
 }
