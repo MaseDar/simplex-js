@@ -1,12 +1,12 @@
 import React, { useRef, useEffect, useState} from 'react';
 import { Row, Col, Radio, Space, InputNumber } from 'antd';
-import BresenhamLine, {setCanvases, BresenhamCircle, DDA, DirectMethod} from './print/Algorithms'
+import BresenhamLine, {setCanvases, BresenhamCircle, DDA, DirectMethod, RectangleForCohenSutherland, CohenSutherland, } from './print/Algorithms'
 function CGPage(){
     // const [value, setValue] = useState("brez");
     const [canvas, setCanvas] = useState(null);
     const [context, setContext] = useState(null); 
     const value = useRef("brez");
-    const bezier = useRef(2);
+    const bezier = useRef(3);
     const canvasRef = useRef(null)
     let count = 0;
     // let checker = 0;
@@ -14,6 +14,7 @@ function CGPage(){
     
     const onChange = e => {
         console.log('radio checked', e.target.value);
+       
         value.current = e.target.value;
     }; 
 
@@ -27,8 +28,8 @@ function CGPage(){
         // check()
         var rect = canvas.getBoundingClientRect();
         points[count] = {}
-        points[count].x = e.clientX - rect.left;
-        points[count].y = e.clientY - rect.top;
+        points[count].x = Math.floor(e.clientX - rect.left);
+        points[count].y = Math.floor(e.clientY - rect.top);
         count++;
     }
 
@@ -48,19 +49,25 @@ function CGPage(){
         console.log("mouseUp", e)
         var rect = canvas.getBoundingClientRect();
         points[count] = {}
-        points[count].x = e.clientX - rect.left;
-        points[count].y = e.clientY - rect.top;
+        points[count].x = Math.floor(e.clientX - rect.left);
+        points[count].y = Math.floor(e.clientY - rect.top);
         //TODO: Надо переместить рендер, чтобы рендерилось в прямом эфире
-        if ( value.current !== "direct_method"){
-            PrintLinearAndCicrcles(points[0].x, points[0].y, points[1].x, points[1].y)
-            points = []
+        
+        if (value.current === "line"){
+            CohenSutherland(points[0].x, points[0].y, points[1].x, points[1].y);
+            points = [];
+            count = 0;
+        } else if ( value.current !== "direct_method"){
+            PrintLinearAndCicrcles(points[0].x, points[0].y, points[1].x, points[1].y);
+            points = [];
+            count = 0;
+        } else if ((value.current === "direct_method") && (count === bezier.current)){
+            DirectMethod(points);
+            points = [];
             count = 0;
         }
-        else if (count === bezier.current){
-            DirectMethod(points)
-            points = []
-            count = 0;
-        }
+
+        
         // TODO: Подумать над тем, как сделать для безье
         
     }
@@ -76,6 +83,9 @@ function CGPage(){
             case "brez_circle":
                 let r = Math.sqrt(((x1 - x) ** 2) + ((y1 - y) ** 2));
                 BresenhamCircle(x,y,r);
+                break;
+            case "saz_koen":
+                RectangleForCohenSutherland(x,y,x1,y1);
                 break;
             default:
                 alert("wooops")
@@ -118,7 +128,7 @@ function CGPage(){
                         buttonStyle="solid"
                     >
                         <Radio.Button value="brez_circle">Брезенхем</Radio.Button>
-                        <Radio.Button value="ehh">reload</Radio.Button>
+                        <Radio.Button value="reload">reload</Radio.Button>
                     </Radio.Group>
                     
                     <h3>Безье</h3>
@@ -128,10 +138,10 @@ function CGPage(){
                         buttonStyle="solid"
                     >
                         <Radio.Button value="direct_method">Прямой метод</Radio.Button>
-                        <Radio.Button value="slpit_method">reload</Radio.Button>
+                        <Radio.Button value="reload">reload</Radio.Button>
                     </Radio.Group>
                     Количество точек
-                    <InputNumber min={2} max={10} defaultValue={2} onChange={ChangeBezier}/>
+                    <InputNumber min={2} max={10} defaultValue={3} onChange={ChangeBezier}/>
 
                     <h3>Отсечение отрезков</h3>
                     <Radio.Group
@@ -139,9 +149,18 @@ function CGPage(){
                         optionType="button"
                         buttonStyle="solid"
                     >
-                        <Radio.Button disabled value="saz_koen">Сазерленд-Коэн</Radio.Button>
-                        <Radio.Button disabled value="middle_dot">Средняя точка</Radio.Button>
+                        <Radio.Button value="saz_koen">Сазерленд-Коэн</Radio.Button>
+                        <Radio.Button value="middle_dot">Средняя точка</Radio.Button>
                         <Radio.Button disabled value="citrus">Цирус-Бек</Radio.Button>
+                    </Radio.Group>
+
+                    <Radio.Group
+                        onChange={onChange}
+                        optionType="button"
+                        buttonStyle="solid"
+                    >
+                        <Radio.Button value="line">Линия</Radio.Button>
+                        <Radio.Button value="reload">reload</Radio.Button>
                     </Radio.Group>
                 </Space>
                 
