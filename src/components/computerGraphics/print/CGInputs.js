@@ -7,7 +7,7 @@ export default function CGInputs(props) {
 
     const onChange = e => {
       console.log('radio checked', e.target.value);
-      setValue(e.target.value);
+      setValue(e.target.value);  
     };
 
     return (
@@ -23,7 +23,7 @@ export default function CGInputs(props) {
                 >
                     <Radio.Button value="dda">DDA</Radio.Button>
                     <Radio.Button value="brez">Брезенхем</Radio.Button>
-                    <Radio.Button value="castle">Кастл-Питвей</Radio.Button>
+                    <Radio.Button value="nonz">Не целый (хз)</Radio.Button>
                 </Radio.Group>
 
                 <h3>Круг</h3>

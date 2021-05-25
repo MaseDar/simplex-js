@@ -51,7 +51,7 @@ function Canvas(props){
         canvas.style = "border:1px solid #000000";
         console.log(canvas)
         //Our draw come here
-    }, [mouseDown])
+    }, [])
     
     return <canvas onMouseDown={mouseDown} onMouseUp={mouseUp} ref={canvasRef} {...props}/>
   }
