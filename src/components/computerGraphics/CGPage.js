@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState} from 'react';
 import { Row, Col, Radio, Space, InputNumber } from 'antd';
-import BresenhamLine, {setCanvases, BresenhamCircle, DDA, DirectMethod, RectangleForCohenSutherland, CohenSutherland, } from './print/Algorithms'
+import BresenhamLine, {setCanvases, BresenhamCircle, DDA, DirectMethod, RectangleForCohenSutherland, CohenSutherland, middlePoint} from './print/Algorithms'
 function CGPage(){
     // const [value, setValue] = useState("brez");
     const [canvas, setCanvas] = useState(null);
@@ -54,7 +54,11 @@ function CGPage(){
         //TODO: Надо переместить рендер, чтобы рендерилось в прямом эфире
         
         if (value.current === "line"){
-            CohenSutherland(points[0].x, points[0].y, points[1].x, points[1].y);
+            // CohenSutherland(points[0].x, points[0].y, points[1].x, points[1].y);
+            
+            middlePoint({x: points[0].x, y: points[0].y}, {x: points[1].x, y: points[1].y});
+            // context.moveTo(p1.x,p1.y);
+            // context.lineTo(p2.x,p2.y);
             points = [];
             count = 0;
         } else if ( value.current !== "direct_method"){
@@ -87,6 +91,7 @@ function CGPage(){
             case "saz_koen":
                 RectangleForCohenSutherland(x,y,x1,y1);
                 break;
+
             default:
                 alert("wooops")
         }

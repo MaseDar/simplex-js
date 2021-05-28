@@ -1,6 +1,7 @@
-
 let context;
-
+let LEFT = 1, RIGHT = 2, BOT = 4, TOP = 8;
+                // начало       конец
+let rectangle = [{x: 0, y: 0}, {x: 0,y: 0}]
 export function setCanvases( new_context){
     context = new_context;
 }
@@ -110,21 +111,20 @@ export function BresenhamCircle(xm, ym, r)
        err += ++x*2+1;                         /* x step */
    } while (x < 0);
 }
-                // левый верх   правый низ
-let rectangle = [{x: 0, y: 0}, {x: 0,y: 0}]
+
 
 function getCode(dot){
     let res = 0;
-    if (dot.x < rectangle[0].x)
+    if (dot.x <  rectangle[0].x)
         res += 1;
-    else if (dot.x > rectangle[1].x)
-        res += 4;
-
-    if (dot.y < rectangle[1].y)
+    if (dot.x > rectangle[1].x)
         res += 2;
-    else if (dot.y > rectangle[0].y)
-        res += 8;
 
+    if (dot.y < rectangle[0].y)
+        res += 4;
+    if (dot.y > rectangle[1].y)
+        res += 8;
+    // console.log({dot, res})
     return res;
 }
 
@@ -141,174 +141,83 @@ export function RectangleForCohenSutherland(x0, y0, x1, y1){
 export function CohenSutherland(x0, y0, x1, y1){
     let p1 = {x:x0, y:y0};
     let p2 = {x:x1, y:y1};
+    console.log("start",p1, p2);
     let p = {}
-    let help;
-    let a = getCode(p1);
-    let b = getCode(p2);
-    // while (a!=0 || b!=0){
-
-    //     if ((a & b) != 0){
-    //         BresenhamLine(p1.x, p1.y, p2.x, p2.y);
-    //         return;
-    //     }
-    //     // замена
-    //     if (a != 0){
-    //         help = a;
-    //         p = p1;
-    //     }
-    //     else{
-    //         help = b;
-    //         p = p2;
-    //     }
-        
-    //     if ((help & 1) !=0){
-    //         p.y += (p1.y - p2.y) * (rectangle[0].x - p.x) / (p1.x - p2.x);
-    //         p.x = rectangle[0].x;
-    //     }
-    //     else if ((help & 2)!= 0){
-    //         p.y += (p1.y - p2.y) * (rectangle[1].x - p.x) / (p1.x - p2.x);
-    //         p.x = rectangle[1].x;
-    //     }
-    //     else if ((help & 4)!= 0){
-    //         p.x += (p1.x - p2.x) * (rectangle[0].y - p.y) / (p1.y - p2.y);
-    //         p.y = rectangle[0].y;
-    //     }
-    //     else if ((help & 8)!=0){
-    //         p.x += (p1.x - p2.x) * (rectangle[1].y  - p.y) / (p1.y - p2.y);
-    //         p.y = rectangle[1].y;
-    //     }
-
-    //     if (help == a){
-    //         p1 = p;
-    //         a = getCode(p1);
-    //     }
-    //     else{
-    //         p2 = p;
-    //         b = getCode(p2);
-    //     }
     
-    // compute outcodes for P0, P1, and whatever point lies outside the clip rectangle
-	let outcode0 = getCode(p1);
-	let outcode1 = getCode(p2);
-    let x,y;
-	while (true) {
-		if (!(outcode0 | outcode1)) {
-			// bitwise OR is 0: both points inside window; trivially accept and exit loop
-			break;
-		} else if (outcode0 & outcode1) {
-			// bitwise AND is not 0: both points share an outside zone (LEFT, RIGHT, TOP,
-			// or BOTTOM), so both must be outside window; exit loop (accept is false)
-			break;
-		} else {
-			// failed both tests, so calculate the line segment to clip
-			// from an outside point to an intersection with clip edge
 
-			// At least one endpoint is outside the clip rectangle; pick it.
-			let outcodeOut = outcode1 > outcode0 ? outcode1 : outcode0;
+    let code;
+    let codeA = getCode(p1);
+    let codeB = getCode(p2);
 
-			// Now find the intersection point;
-			// use formulas:
-			//   slope = (y1 - y0) / (x1 - x0)
-			//   x = x0 + (1 / slope) * (ym - y0), where ym is ymin or rectangle[0].y
-			//   y = y0 + slope * (xm - x0), where xm is xmin or xmax
-			// No need to worry about divide-by-zero because, in each case, the
-			// outcode bit being tested guarantees the denominator is non-zero
-			if (outcodeOut & 8) {           // point is above the clip window
-				x = x0 + (x1 - x0) * (rectangle[0].y - y0) / (y1 - y0);
-				y = rectangle[0].y;
-			} else if (outcodeOut & 4) { // point is below the clip window
-				x = x0 + (x1 - x0) * (rectangle[1].y - y0) / (y1 - y0);
-				y = rectangle[1].y;
-			} else if (outcodeOut & 2) {  // point is to the right of clip window
-				y = y0 + (y1 - y0) * (rectangle[0].x - x0) / (x1 - x0);
-				x = rectangle[0].x;
-			} else if (outcodeOut & 1) {   // point is to the left of clip window
-				y = y0 + (y1 - y0) * (rectangle[1].x - x0) / (x1 - x0);
-				x = rectangle[1].x;
-			}
+    while (codeA!=0 || codeB !=0)
+    {
+        // Ебать я гений нахуй, надо чистить жопу...
+        if ((codeA & codeB) != 0)
+            return;
 
-			// Now we move outside point to intersection point to clip
-			// and get ready for next pass.
-			if (outcodeOut == outcode0) {
-				p1.x = x;
-				p1.y = y;
-				outcode0 = getCode(p1);
-			} else {
-				p2.x = x;
-				p2.y = y;
-				outcode1 = getCode(p2);
-			}
-		}
-	}
-    BresenhamLine(p1.x, p1.y, p2.x, p2.y);
-    
-    // while(( a | b ) && (!( a & b ))){
-    //     if (a == 0){   
-    //         help = p1;
-    //         p2 = p1;
-    //         p2 = help;
-    //         help = a;
-    //         a = b;
-    //         b = help;
-    //         help = 0;
-    //     }
-        
-    //     p = p1;
-    //     if (a & 1){
-    //         p.x = +(p.x + (p2.y - p.y) * (rectangle[0].x - p.x) / (p2.x - p.x)).toFixed(4);
-    //         p.y = rectangle[0].x;
-    //     }
-    //     else if (a & 2){
-    //         p.x = +(p.x + (p2.y - p.y) * (rectangle[0].y - p.y) / (p2.x - p.x)).toFixed(4);
-    //         p.y = rectangle[0].y;
-    //     }
-    //     else if (a & 4){
-    //         p.y = +(p.y +(p2.y - p.y) * (rectangle[1].x - p.x) / (p2.x - p.x)).toFixed(4);
-    //         p.x = rectangle[1].x;
-    //     }
-    //     else if (a & 8){
-    //         p.x = +(p.x + (p2.x - p.x) * (rectangle[1].y  - p.y) / (p2.y - p.y)).toFixed(4);
-    //         p.y = rectangle[1].y;
-    //     }
-    //     a = getCode(p);
-    //     b = getCode(p2);
-    //     // if (help == a){
-    //         // p1 = p;
-    //         // a = getCode(p.x, p.y);
-    //     // }
-    //     // else{
-            // p2 = p;
-            // b = getCode(p2.x, p2.y);
-        // }
+        if (codeA != 0){
+            code = codeA;
+            p = p1;
+        }
+        else{
+            code = codeB;
+            p = p2;
+        }
 
+        if ((code & LEFT) !=0){
+            p.y += (p1.y - p2.y) * (rectangle[0].x - p.x) / (p1.x - p2.x);
+            p.x = rectangle[0].x;
+        }
+        else if ((code & RIGHT)!=0){
+            p.y += (p1.y - p2.y) * (rectangle[1].x - p.x) / (p1.x - p2.x);
+            p.x = rectangle[1].x;
+        }
+        else if ((code & BOT)!=0){
+            p.x += (p1.x - p2.x) * (rectangle[0].y  - p.y) / (p1.y - p2.y);
+            p.y = rectangle[0].y;
+        }
+        else if ((code & TOP)!=0){
+            p.x += (p1.x - p2.x) * (rectangle[1].y - p.y) / (p1.y - p2.y);
+            p.y = rectangle[1].y;
+            
+        }
 
-        // //
-        // if ((help & 1) !=0){
-        //     p.y += (p1.y - p2.y) * (rectangle[0].x - p.x) / (p1.x - p2.x);
-        //     p.x = rectangle[0].x;
-        // }
-        // else if ((help & 2)!= 0){
-        //     p.y += (p1.y - p2.y) * (rectangle[1].x - rectangle[0].x - p.x) / (p1.x - p2.x);
-        //     p.x = rectangle[1].x - rectangle[0].x;
-        // }
-        // else if ((help & 4)!= 0){
-        //     p.x += (p1.x - p2.x) * (rectangle[1].y - rectangle[0].y - p.y) / (p1.y - p2.y);
-        //     p.y = rectangle[1].y - rectangle[0].y;
-        // }
-        // else if ((help & 8)!=0){
-        //     p.x += (p1.x - p2.x) * (rectangle[1].y  - p.y) / (p1.y - p2.y);
-        //     p.y = rectangle[1].y;
-        // }
+        if (code == codeA){
+            p1 = p;
+            codeA= getCode(p1);
+        }
+        else{
+            p2 = p;
+            codeB = getCode(p2);
+        }
 
-        // if (help == a){
-        //     p1 = p;
-        //     a = getCode(p1.x, p1.y);
-        // }
-        // else{
-        //     p2 = p;
-        //     b = getCode(p2.x, p2.y);
-        // }
+    }
+    BresenhamLine(Math.floor(p1.x), Math.floor(p1.y), Math.floor(p2.x), Math.floor(p2.y));
+    console.log("lend",p1, p2);
 
-    // }
-    
-}
+    }
+ 
+    function isInside(p){
+        let r = rectangle;
+        return(
+            r[0].x <= p.x && r[1].x >= p.x && r[0].y <= p.y && r[1].y >= p.y
+        )
+    }
+    export function middlePoint( p1, p2)
+    {
+        if (Math.abs(p1.x - p2.x) <= 1 && Math.abs(p1.y - p2.y) <= 1)
+            return;
+        if (isInside(p1) && isInside(p2)){
+            BresenhamLine(Math.floor(p1.x), Math.floor(p1.y), Math.floor(p2.x), Math.floor(p2.y));
+            console.log("paint");
+            return;
+        }
+
+        let codeA = getCode(p1);
+        let codeB = getCode(p2);
+        if ((codeA & codeB) != 0)
+            return;
+
+        middlePoint(p1, {x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 });
+        middlePoint({x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2}, p2);
+    }
