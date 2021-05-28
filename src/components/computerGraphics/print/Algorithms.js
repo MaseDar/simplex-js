@@ -114,18 +114,16 @@ export function BresenhamCircle(xm, ym, r)
 
 
 function getCode(dot){
-    let res = 0;
+    let code = 0;
     if (dot.x <  rectangle[0].x)
-        res += 1;
-    if (dot.x > rectangle[1].x)
-        res += 2;
-
+        code += LEFT;
+    else if (dot.x > rectangle[1].x)
+        code += RIGHT;
     if (dot.y < rectangle[0].y)
-        res += 4;
-    if (dot.y > rectangle[1].y)
-        res += 8;
-    // console.log({dot, res})
-    return res;
+        code += BOT;
+    else if (dot.y > rectangle[1].y)
+        code += TOP;
+    return code;
 }
 
 
@@ -143,19 +141,18 @@ export function CohenSutherland(x0, y0, x1, y1){
     let p2 = {x:x1, y:y1};
     console.log("start",p1, p2);
     let p = {}
-    
 
     let code;
     let codeA = getCode(p1);
     let codeB = getCode(p2);
 
-    while (codeA!=0 || codeB !=0)
+    while (codeA | codeB)
     {
         // Ебать я гений нахуй, надо чистить жопу...
-        if ((codeA & codeB) != 0)
+        if (codeA & codeB)
             return;
 
-        if (codeA != 0){
+        if (codeA | 0){
             code = codeA;
             p = p1;
         }
@@ -164,25 +161,24 @@ export function CohenSutherland(x0, y0, x1, y1){
             p = p2;
         }
 
-        if ((code & LEFT) !=0){
+        if (code & LEFT){
             p.y += (p1.y - p2.y) * (rectangle[0].x - p.x) / (p1.x - p2.x);
             p.x = rectangle[0].x;
         }
-        else if ((code & RIGHT)!=0){
+        else if (code & RIGHT){
             p.y += (p1.y - p2.y) * (rectangle[1].x - p.x) / (p1.x - p2.x);
             p.x = rectangle[1].x;
         }
-        else if ((code & BOT)!=0){
+        else if (code & BOT){
             p.x += (p1.x - p2.x) * (rectangle[0].y  - p.y) / (p1.y - p2.y);
             p.y = rectangle[0].y;
         }
-        else if ((code & TOP)!=0){
+        else if (code & TOP){
             p.x += (p1.x - p2.x) * (rectangle[1].y - p.y) / (p1.y - p2.y);
-            p.y = rectangle[1].y;
-            
+            p.y = rectangle[1].y;   
         }
 
-        if (code == codeA){
+        if (code === codeA){
             p1 = p;
             codeA= getCode(p1);
         }
@@ -194,30 +190,30 @@ export function CohenSutherland(x0, y0, x1, y1){
     }
     BresenhamLine(Math.floor(p1.x), Math.floor(p1.y), Math.floor(p2.x), Math.floor(p2.y));
     console.log("lend",p1, p2);
-
-    }
+}
  
-    function isInside(p){
-        let r = rectangle;
-        return(
-            r[0].x <= p.x && r[1].x >= p.x && r[0].y <= p.y && r[1].y >= p.y
-        )
-    }
-    export function middlePoint( p1, p2)
-    {
-        if (Math.abs(p1.x - p2.x) <= 1 && Math.abs(p1.y - p2.y) <= 1)
-            return;
-        if (isInside(p1) && isInside(p2)){
-            BresenhamLine(Math.floor(p1.x), Math.floor(p1.y), Math.floor(p2.x), Math.floor(p2.y));
-            console.log("paint");
-            return;
-        }
+// function isInside(p){
+//     let r = rectangle;
+//     return(
+//         r[0].x <= p.x && r[1].x >= p.x && r[0].y <= p.y && r[1].y >= p.y
+//     )
+// }
+export function middlePoint( p1, p2)
+{
+    // заглушка, но он работает.    
+    // if (Math.abs(p1.x - p2.x) <= 1 && Math.abs(p1.y - p2.y) <= 1)
+    //     return;
+    // if (isInside(p1) && isInside(p2)){
+    //     BresenhamLine(Math.floor(p1.x), Math.floor(p1.y), Math.floor(p2.x), Math.floor(p2.y));
+    //     console.log("paint");
+    //     return;
+    // }
 
-        let codeA = getCode(p1);
-        let codeB = getCode(p2);
-        if ((codeA & codeB) != 0)
-            return;
+    // let codeA = getCode(p1);
+    // let codeB = getCode(p2);
+    // if ((codeA & codeB) != 0)
+    //     return;
 
-        middlePoint(p1, {x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 });
-        middlePoint({x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2}, p2);
-    }
+    // middlePoint(p1, {x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 });
+    // middlePoint({x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2}, p2);
+}

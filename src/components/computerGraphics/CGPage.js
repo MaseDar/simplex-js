@@ -54,7 +54,7 @@ function CGPage(){
         //TODO: Надо переместить рендер, чтобы рендерилось в прямом эфире
         
         if (value.current === "line"){
-            // CohenSutherland(points[0].x, points[0].y, points[1].x, points[1].y);
+            CohenSutherland(points[0].x, points[0].y, points[1].x, points[1].y);
             
             middlePoint({x: points[0].x, y: points[0].y}, {x: points[1].x, y: points[1].y});
             // context.moveTo(p1.x,p1.y);
