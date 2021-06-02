@@ -25,6 +25,7 @@ import {
 import Simplex from "./components/methods/simplex/Simplex";
 import Dev from "./components/Dev";
 import CGPage from "./components/computerGraphics/CGPage";
+import UlamSpiral from "./components/volch/UlamSpiral";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -52,6 +53,11 @@ function App() {
                 Компьютерная Графика
               </Link>
             </Menu.Item>
+            <Menu.Item key="3">
+              <Link to="/mpea" title="МПЭА">
+                МПЭА
+              </Link>
+            </Menu.Item>
           </Menu>
         </Header>
 
@@ -61,6 +67,9 @@ function App() {
           </Route>
           <Route path="/сomputergraphics">
             <ComputerGraphics />
+          </Route>
+          <Route path="/mpea">
+            <UlamSpiral />
           </Route>
           <Route>
             <Redirect to="/optimizationmethods"></Redirect>
