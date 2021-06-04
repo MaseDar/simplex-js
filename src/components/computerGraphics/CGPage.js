@@ -8,6 +8,8 @@ import BresenhamLine, {
   RectangleForCohenSutherland,
   CohenSutherland,
   middlePoint,
+  setPoints,
+  Citrus,
 } from "./print/Algorithms";
 function CGPage() {
   // const [value, setValue] = useState("brez");
@@ -16,6 +18,7 @@ function CGPage() {
   // const [reload, setReload] = useState(true);
   const value = useRef("brez");
   const bezier = useRef(3);
+  const citrus = useRef(4);
   const canvasRef = useRef(null);
   let count = 0;
   // let checker = 0;
@@ -30,6 +33,11 @@ function CGPage() {
   const ChangeBezier = (e) => {
     console.log("change bezier:", e);
     bezier.current = e;
+  };
+
+  const changeCitrus = (e) => {
+    console.log("change citrus:", e);
+    citrus.current = e;
   };
 
   function mouseDown(e) {
@@ -75,7 +83,10 @@ function CGPage() {
       // context.lineTo(p2.x,p2.y);
       points = [];
       count = 0;
-    } else if (value.current !== "direct_method") {
+    } else if (
+      value.current !== "direct_method" &&
+      value.current !== "citrus_help"
+    ) {
       PrintLinearAndCicrcles(
         points[0].x,
         points[0].y,
@@ -88,9 +99,11 @@ function CGPage() {
       DirectMethod(points);
       points = [];
       count = 0;
+    } else if (value.current === "citrus_help" && count === citrus.current) {
+      setPoints(points);
+      points = [];
+      count = 0;
     }
-
-    // TODO: Подумать над тем, как сделать для безье
   }
 
   function PrintLinearAndCicrcles(x, y, x1, y1) {
@@ -111,6 +124,10 @@ function CGPage() {
         break;
       case "middle_dot":
         middlePoint({ x, y }, { x: x1, y: y1 });
+        break;
+      case "citrus":
+        const line = { p1: { x, y }, p2: { x: x1, y: y1 } };
+        Citrus(line);
         break;
       default:
         alert("wooops");
@@ -176,9 +193,7 @@ function CGPage() {
           >
             <Radio.Button value="saz_koen">Сазерленд-Коэн</Radio.Button>
             <Radio.Button value="middle_dot">Средняя точка</Radio.Button>
-            <Radio.Button disabled value="citrus">
-              Цирус-Бек
-            </Radio.Button>
+            <Radio.Button value="citrus">Кирус-Бек</Radio.Button>
           </Radio.Group>
           <Radio.Group
             onChange={onChange}
@@ -186,8 +201,15 @@ function CGPage() {
             buttonStyle="solid"
           >
             <Radio.Button value="rectangle">Прямоугольник</Radio.Button>
-            <Radio.Button value="reload">reload</Radio.Button>
+            <Radio.Button value="citrus_help">Многоугольник</Radio.Button>
           </Radio.Group>
+          Количество точек для многоугольника
+          <InputNumber
+            min={4}
+            max={10}
+            defaultValue={4}
+            onChange={changeCitrus}
+          />
         </Space>
         {/* <CGInputs setValue={setValue}/> */}
       </Col>

@@ -49,9 +49,9 @@ export default function CGInputs(props) {
           optionType="button"
           buttonStyle="solid"
         >
-          <Radio.Button value="saz_koen">Сазерленд-Коэн</Radio.Button>
+          <Radio.Button value="saz_koen">Саasdasdзерленд-Коэн</Radio.Button>
           <Radio.Button value="middle_dot">Средняя точка</Radio.Button>
-          <Radio.Button value="citrus">Цирус-Бек</Radio.Button>
+          <Radio.Button value="citrus">Кsadasирус-Бек</Radio.Button>
         </Radio.Group>
       </Space>
 
