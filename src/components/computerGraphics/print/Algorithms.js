@@ -447,14 +447,14 @@ export function Citrus(line) {
     switch (Math.sign(scalarMuliply(dir, getNormal(edge)))) {
       case 1: {
         let t = intersectionParameter(line, edge);
-        if (t > tA) {
+        if (t < tA) {
           tA = t;
         }
         break;
       }
       case -1: {
         var t = intersectionParameter(line, edge);
-        if (t < tB) {
+        if (t > tB) {
           tB = t;
         }
         break;
@@ -473,12 +473,60 @@ export function Citrus(line) {
   });
 
   if (!_return) {
-    if (tA > tB) {
+    if (tA <= tB) {
       return;
     }
     let new_line = morph(tA, tB, line);
     let p1 = new_line.p1;
     let p2 = new_line.p2;
+    BresenhamLine(p1.x, p1.y, p2.x, p2.y);
+  }
+}
+
+export function Citrus_v2(line) {
+  let dS = direction(line);
+  let tE = 0;
+  let tL = 1;
+  let edges = getEdges();
+  let _return = 0;
+  edges.map((edge) => {
+    let e = direction(edge);
+    let N = det(e, sub(line.p1, edge.p1)); // = -dot (ne, S.P0-V [i])
+    let D = -det(e, dS); // = точка (ne, dS)
+    if (D < 0.000001) {
+      // S почти параллельна этому краю
+      if (N < 0)
+        // P0 находится за пределами этого края, поэтому
+        return edge; // S находится за пределами многоугольника,
+      // else // S не может пересечь это ребро, поэтому
+      // continue; // игнорируем это ребро
+    }
+    let t = N / D;
+    if (D < 0) {
+      // сегмент S входит через этот край
+      if (t > tE) {
+        // новый max tE
+        tE = t;
+        if (tE > tL)
+          // S входит после выхода из многоугольника
+          return edge;
+      }
+    } else {
+      // сегмент S уходит через это ребро
+      if (t < tL) {
+        // new min tL
+        tL = t;
+        if (tL < tE)
+          // S уходит до входа в многоугольник
+          return edge;
+      }
+    }
+  });
+
+  if (tE <= tL) {
+    // let new_line = morph(tA, tB, line);
+    let p1 = add(line.p1, multiply(dS, tE));
+    let p2 = add(line.p1, multiply(dS, tL));
     BresenhamLine(p1.x, p1.y, p2.x, p2.y);
   }
 }

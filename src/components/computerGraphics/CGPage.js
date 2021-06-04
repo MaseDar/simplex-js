@@ -10,6 +10,7 @@ import BresenhamLine, {
   middlePoint,
   setPoints,
   Citrus,
+  Citrus_v2,
 } from "./print/Algorithms";
 function CGPage() {
   // const [value, setValue] = useState("brez");
@@ -127,7 +128,7 @@ function CGPage() {
         break;
       case "citrus":
         const line = { p1: { x, y }, p2: { x: x1, y: y1 } };
-        Citrus(line);
+        Citrus_v2(line);
         break;
       default:
         alert("wooops");
