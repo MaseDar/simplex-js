@@ -9,8 +9,7 @@ import BresenhamLine, {
   CohenSutherland,
   middlePoint,
   setPoints,
-  Citrus,
-  Citrus_v2,
+  cyrusBeck
 } from "./print/Algorithms";
 function CGPage() {
   // const [value, setValue] = useState("brez");
@@ -127,8 +126,8 @@ function CGPage() {
         middlePoint({ x, y }, { x: x1, y: y1 });
         break;
       case "citrus":
-        const line = { p1: { x, y }, p2: { x: x1, y: y1 } };
-        Citrus_v2(line);
+        // const line = { p1: { x, y }, p2: { x: x1, y: y1 } };
+        cyrusBeck(x, y, x1, y1);
         break;
       default:
         alert("wooops");

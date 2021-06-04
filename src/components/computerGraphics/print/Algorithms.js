@@ -214,140 +214,6 @@ export function middlePoint(p1, p2) {
   middlePoint({ x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 }, p2);
 }
 
-/*
- * Алогритм отсечения "Кируса-Бека" для 2д
- * 1.Ставим N точек, чтобы построить многогранник
- *   public struct Segment
-    {
-        public readonly PointF A, B;
-
-        public Segment(PointF a, PointF b)
-        {
-            A = a;
-            B = b;
-        }
-
-        public bool OnLeft(PointF p)
-        {
-            var ab = new PointF(B.X - A.X, B.Y - A.Y);
-            var ap = new PointF(p.X - A.X, p.Y - A.Y);
-            return ab.Det(ap) >= 0;
-        }
-
-        public PointF Normal
-        {
-            get
-            {
-                return new PointF(B.Y - A.Y, A.X - B.X);
-            }
-        }
-
-        public PointF Direction
-        {
-            get
-            {
-                return new PointF(B.X - A.X, B.Y - A.Y);
-            }
-        }
-
-        public float IntersectionParameter(Segment seg)
-        {
-            var segment = this;
-            var edge = seg;
-
-            var segmentToEdge = edge.A.Sub(segment.A);
-            var segmentDir = segment.Direction;
-            var edgeDir = edge.Direction;
-
-            var t = edgeDir.Det(segmentToEdge) / edgeDir.Det(segmentDir);
-
-            if (float.IsNaN(t))
-            {
-                t = 0;
-            }
-
-            return t;
-        }
-
-        public Segment Morph(float tA, float tB)
-        {
-            var d = Direction;
-            return new Segment(A.Add(d.Mul(tA)), A.Add(d.Mul(tB)));
-        }
-    }
-
-    public class Polygon
-    {
-        private List<PointF> points;
-
-        public Polygon(List<PointF> points)
-        {
-            this.points = points;
-        }
-
-
-
-        public List<Segment> GetEdges()
-        {
-            List<Segment> edges = new List<Segment>();
-            for (int i = 0; i < points.Count-1; i++)
-            {
-                edges.Add(new Segment(points[i], points[i + 1]));
-            }
-            edges.Add(new Segment(points[points.Count - 1], points[0]));
-
-            return edges;
-        }
-
-        public void DrawCirusBec(Graphics g, Segment seg)
-        {
-            var dir = seg.Direction;
-            var tA = 0.0f;
-            var tB = 1.0f;
-            var edges = GetEdges();
-            foreach (var edge in edges)
-            {
-                switch (Math.Sign(edge.Normal.ScalarMul(dir)))
-                {
-                    case -1:
-                        {
-                            var t = seg.IntersectionParameter(edge);
-                            if (t > tA)
-                            {
-                                tA = t;
-                            }
-                            break;
-                        }
-                    case +1:
-                        {
-                            var t = seg.IntersectionParameter(edge);
-                            if (t < tB)
-                            {
-                                tB = t;
-                            }
-                            break;
-                        }
-                    case 0:
-                        {
-                            if (!edge.OnLeft(seg.A))
-                            {
-                                return;
-                            }
-                            break;
-                        }
-                }
-            }
-            if (tA > tB)
-            {
-                return;
-            }
-            seg = seg.Morph(tA, tB);
-
-            LineWithIntCords.Draw(g, new Point((int)Math.Round(seg.A.X), (int)Math.Round(seg.A.Y)), new Point((int)Math.Round(seg.B.X), (int)Math.Round(seg.B.Y)));
-        }
-    }
- */
-// список точек, формирующих многогранник
 let points = [];
 let p1, p2;
 
@@ -364,169 +230,73 @@ export function setPoints(front_points) {
   console.log("end printing");
 }
 
-function scalarMuliply(p1, p2) {
-  return p1.x * p2.x + p1.y * p2.y;
-}
-function getNormal(seg) {
-  p1 = seg.p1;
-  p2 = seg.p2;
-  return { x: p2.y - p1.y, y: p1.x - p2.x };
-}
+export function cyrusBeck(x1, y1, x2, y2) {
+  var k = points.length;
+  var d = [x2 - x1, y2 - y1];
+  var f = points;
+  let px,py,px1,py1;
+  var normals = [];
+  var w;
+  var n = points.length;
+  var tl = 0;
+  var tu = 1;
+  var Ddotn, Wdotn, t;
 
-function direction(line) {
-  p1 = line.p1;
-  p2 = line.p2;
-  // возвращается точка {x,y}
-  return { x: p2.x - p1.x, y: p2.y - p1.y };
-}
-
-function getEdges() {
-  let edges = [];
-  let p1, p2;
-  for (let i = 0; i < points.length - 1; i++) {
-    p1 = points[i];
-    p2 = points[i + 1];
-    edges.push({ p1, p2 });
-  }
-  p1 = points[points.length - 1];
-  p2 = points[0];
-  edges.push({ p1, p2 });
-  return edges;
-}
-
-function sub(p1, p2) {
-  return { x: p1.x - p2.x, y: p1.y - p2.y };
-}
-function det(p1, p2) {
-  return p1.x * p2.y - p1.y * p2.x;
-}
-
-function intersectionParameter(seg, edge) {
-  let segmentToEdge = sub(edge.p1, seg.p1);
-  let segmentDir = direction(seg);
-  let edgeDir = direction(edge);
-  let t = det(edgeDir, segmentToEdge) / det(edgeDir, segmentDir);
-
-  if (isNaN(t)) {
-    t = 0;
+  //finding normals
+  for (let i = 0; i < n; i++) {
+      normals.push([points[(i) % n].y - points[(i + 1) % n].y, [points[(i + 1) % n].x - points[i % n].x]]);
   }
 
-  return t;
-}
+  console.log(points);
 
-function add(p1, p2) {
-  return { x: p1.x + p2.x, y: p1.y + p2.y };
-}
-function multiply(p, a) {
-  return { x: p.x * a, y: p.y * a };
-}
+  for (let i = 0; i < k; i++) {
+      w = [x1 - f[i].x, y1 - f[i].y];
 
-function morph(tA, tB, line) {
-  let d = direction(line);
-  let p1 = line.p1;
+      Ddotn = dotProduct(d, normals[i]);
+      Wdotn = dotProduct(w, normals[i]);
 
-  // A.Add(d.Mul(tA)), A.Add(d.Mul(tB)))
-  return { p1: add(p1, multiply(d, tA)), p2: add(p1, multiply(d, tB)) };
-}
+      if (Ddotn !== 0) {
+          t = -Wdotn / Ddotn;
 
-function onLeft(seg, p) {
-  let p1 = seg.p1;
-  let p2 = seg.p2;
-  let ab = { x: p2.x - p1.x, y: p2.y - p1.y };
-  let ap = { x: p.x - p1.x, y: p.y - p1.y };
-  return det(ab, ap) >= 0;
-}
-// line - {p1,p2}, p1 или p2 = {x,y}
-export function Citrus(line) {
-  let dir = direction(line);
-  let tA = 0;
-  let tB = 1;
-  let edges = getEdges();
-  let _return = 0;
-  edges.map((edge) => {
-    switch (Math.sign(scalarMuliply(dir, getNormal(edge)))) {
-      case 1: {
-        let t = intersectionParameter(line, edge);
-        if (t < tA) {
-          tA = t;
-        }
-        break;
+          if (Ddotn > 0) {
+              if (t > 1) {
+                  return;
+              }
+              else {
+                  tl = Math.max(t, tl);
+              }
+          }
+          else {
+              if (t < 0) {
+                  return;
+              }
+              else {
+                  tu = Math.min(t, tu);
+              }
+          }
       }
-      case -1: {
-        var t = intersectionParameter(line, edge);
-        if (t > tB) {
-          tB = t;
-        }
-        break;
+      else {
+          if (Wdotn < 0) {
+              return;
+          }
       }
-      case 0: {
-        if (!onLeft(edge, line.p1)) {
-          _return = 1;
-          break;
-        }
-        break;
-      }
-      default:
-        return edge;
-    }
-    return edge;
-  });
-
-  if (!_return) {
-    if (tA <= tB) {
-      return;
-    }
-    let new_line = morph(tA, tB, line);
-    let p1 = new_line.p1;
-    let p2 = new_line.p2;
-    BresenhamLine(p1.x, p1.y, p2.x, p2.y);
   }
+  if (tl <= tu) {
+       px =  x1 + (x2 - x1) * tl;
+       py =  y1 + (y2 - y1) * tl;
+       px1 = x1 + (x2 - x1) * tu;
+       py1 = y1 + (y2 - y1) * tu;
+  }
+  console.log({px,py,px1,py1})
+  BresenhamLine(Math.floor(px),Math.floor(py),Math.floor(px1),Math.floor(py1));
 }
 
-export function Citrus_v2(line) {
-  let dS = direction(line);
-  let tE = 0;
-  let tL = 1;
-  let edges = getEdges();
-  let _return = 0;
-  edges.map((edge) => {
-    let e = direction(edge);
-    let N = det(e, sub(line.p1, edge.p1)); // = -dot (ne, S.P0-V [i])
-    let D = -det(e, dS); // = точка (ne, dS)
-    if (D < 0.000001) {
-      // S почти параллельна этому краю
-      if (N < 0)
-        // P0 находится за пределами этого края, поэтому
-        return edge; // S находится за пределами многоугольника,
-      // else // S не может пересечь это ребро, поэтому
-      // continue; // игнорируем это ребро
-    }
-    let t = N / D;
-    if (D < 0) {
-      // сегмент S входит через этот край
-      if (t > tE) {
-        // новый max tE
-        tE = t;
-        if (tE > tL)
-          // S входит после выхода из многоугольника
-          return edge;
-      }
-    } else {
-      // сегмент S уходит через это ребро
-      if (t < tL) {
-        // new min tL
-        tL = t;
-        if (tL < tE)
-          // S уходит до входа в многоугольник
-          return edge;
-      }
-    }
-  });
+function dotProduct(p1, p2) {
+  var res = 0;
 
-  if (tE <= tL) {
-    // let new_line = morph(tA, tB, line);
-    let p1 = add(line.p1, multiply(dS, tE));
-    let p2 = add(line.p1, multiply(dS, tL));
-    BresenhamLine(p1.x, p1.y, p2.x, p2.y);
+  for (var i = 0; i < 2; i++) {
+      res += p1[i] * p2[i];
   }
+
+  return res;
 }
