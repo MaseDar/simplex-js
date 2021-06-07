@@ -27,6 +27,7 @@ function Fuctorial(n) {
   for (let i = 1; i <= n; i++) res *= i;
   return res;
 }
+
 // Функция вычисления полинома Бернштейна
 function polinom(i, n, t) {
   return (
@@ -35,6 +36,7 @@ function polinom(i, n, t) {
     Math.pow(1 - t, n - i)
   );
 }
+
 // Функция рисования кривой Безье
 export function DirectMethod(Arr) {
   let j = 0;
@@ -45,6 +47,7 @@ export function DirectMethod(Arr) {
   for (let t = 0; t < 1; t += step) {
     let ytmp = 0;
     let xtmp = 0;
+
     // проходим по каждой точке
     for (let i = 0; i < Arr.length; i++) {
       let b = polinom(i, Arr.length - 1, t); // вычисляем наш полином Бернштейна
@@ -55,9 +58,10 @@ export function DirectMethod(Arr) {
     result[j] = { x: xtmp, y: ytmp };
     j++;
   }
+  // Рисуем полученную кривую Безье
   for (let i = 0; i < result.length; i++) {
     setPixel(result[i].x, result[i].y);
-  } // Рисуем полученную кривую Безье
+  }
 }
 
 export default function BresenhamLine(x, y, x1, y1) {
@@ -65,23 +69,24 @@ export default function BresenhamLine(x, y, x1, y1) {
   var dy = Math.abs(y1 - y);
   var sx = x < x1 ? 1 : -1;
   var sy = y < y1 ? 1 : -1;
-  var err = dx - dy;
+  var delta = dx - dy;
 
   while (true) {
-    setPixel(x, y); // Do what you need to for this
+    setPixel(x, y);
 
     if (x === x1 && y === y1) break;
-    let e2 = 2 * err;
+    let e2 = 2 * delta;
     if (e2 > -dy) {
-      err -= dy;
+      delta -= dy;
       x += sx;
     }
     if (e2 < dx) {
-      err += dx;
+      delta += dx;
       y += sy;
     }
   }
 }
+
 export function DDA(x0, y0, x1, y1) {
   const dx = x1 - x0,
     dy = y1 - y0,
@@ -100,19 +105,24 @@ export function DDA(x0, y0, x1, y1) {
     setPixel(x, y);
   }
 }
-
+// окружность брезенхейма
 export function BresenhamCircle(xm, ym, r) {
-  var x = -r,
+  let x = -r,
     y = 0,
-    err = 2 - 2 * r; /* bottom left to top right */
+    delta = 2 - 2 * r;
+  console.log(delta);
   do {
-    setPixel(xm - x, ym + y); /*   I. Quadrant +x +y */
-    setPixel(xm - y, ym - x); /*  II. Quadrant -x +y */
-    setPixel(xm + x, ym - y); /* III. Quadrant -x -y */
-    setPixel(xm + y, ym + x); /*  IV. Quadrant +x -y */
-    r = err;
-    if (r <= y) err += ++y * 2 + 1; /* y step */
-    if (r > x || err > y) err += ++x * 2 + 1; /* x step */
+    setPixel(xm - x, ym + y);
+    setPixel(xm - y, ym - x);
+    setPixel(xm + x, ym - y);
+    setPixel(xm + y, ym + x);
+
+    if (delta <= y) {
+      delta += ++y * 2 + 1; /* y шаг */
+    }
+    if (delta > x || delta > y) {
+      delta += ++x * 2 + 1;
+    } /* x шаг */
   } while (x < 0);
 }
 
@@ -145,7 +155,6 @@ export function CohenSutherland(x0, y0, x1, y1) {
   let codeB = getCode(p2);
 
   while (codeA | codeB) {
-    // Ебать я гений нахуй, надо чистить жопу...
     if (codeA & codeB) return;
 
     if (codeA | 0) {
@@ -234,7 +243,7 @@ export function cyrusBeck(x1, y1, x2, y2) {
   var k = points.length;
   var d = [x2 - x1, y2 - y1];
   var f = points;
-  let px,py,px1,py1;
+  let px, py, px1, py1;
   var normals = [];
   var w;
   var n = points.length;
@@ -244,58 +253,62 @@ export function cyrusBeck(x1, y1, x2, y2) {
 
   //finding normals
   for (let i = 0; i < n; i++) {
-      normals.push([points[(i) % n].y - points[(i + 1) % n].y, [points[(i + 1) % n].x - points[i % n].x]]);
+    normals.push([
+      points[i % n].y - points[(i + 1) % n].y,
+      [points[(i + 1) % n].x - points[i % n].x],
+    ]);
   }
 
   console.log(points);
 
   for (let i = 0; i < k; i++) {
-      w = [x1 - f[i].x, y1 - f[i].y];
+    w = [x1 - f[i].x, y1 - f[i].y];
 
-      Ddotn = dotProduct(d, normals[i]);
-      Wdotn = dotProduct(w, normals[i]);
+    Ddotn = dotProduct(d, normals[i]);
+    Wdotn = dotProduct(w, normals[i]);
 
-      if (Ddotn !== 0) {
-          t = -Wdotn / Ddotn;
+    if (Ddotn !== 0) {
+      t = -Wdotn / Ddotn;
 
-          if (Ddotn > 0) {
-              if (t > 1) {
-                  return;
-              }
-              else {
-                  tl = Math.max(t, tl);
-              }
-          }
-          else {
-              if (t < 0) {
-                  return;
-              }
-              else {
-                  tu = Math.min(t, tu);
-              }
-          }
+      if (Ddotn > 0) {
+        if (t > 1) {
+          return;
+        } else {
+          tl = Math.max(t, tl);
+        }
+      } else {
+        if (t < 0) {
+          return;
+        } else {
+          tu = Math.min(t, tu);
+        }
       }
-      else {
-          if (Wdotn < 0) {
-              return;
-          }
+    } else {
+      if (Wdotn < 0) {
+        return;
       }
+    }
   }
   if (tl <= tu) {
-       px =  x1 + (x2 - x1) * tl;
-       py =  y1 + (y2 - y1) * tl;
-       px1 = x1 + (x2 - x1) * tu;
-       py1 = y1 + (y2 - y1) * tu;
+    px = x1 + (x2 - x1) * tl;
+    py = y1 + (y2 - y1) * tl;
+    px1 = x1 + (x2 - x1) * tu;
+    py1 = y1 + (y2 - y1) * tu;
   }
-  console.log({px,py,px1,py1})
-  BresenhamLine(Math.floor(px),Math.floor(py),Math.floor(px1),Math.floor(py1));
+  console.log({ px, py, px1, py1 });
+  BresenhamLine(
+    Math.floor(px),
+    Math.floor(py),
+    Math.floor(px1),
+    Math.floor(py1)
+  );
 }
 
 function dotProduct(p1, p2) {
   var res = 0;
 
   for (var i = 0; i < 2; i++) {
-      res += p1[i] * p2[i];
+    res += p1[i] * p2[i];
   }
 
   return res;
