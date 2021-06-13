@@ -9,7 +9,8 @@ import BresenhamLine, {
   CohenSutherland,
   middlePoint,
   setPoints,
-  cyrusBeck
+  cyrusBeck,
+  lineNotInt,
 } from "./print/Algorithms";
 function CGPage() {
   // const [value, setValue] = useState("brez");
@@ -114,6 +115,9 @@ function CGPage() {
       case "brez":
         BresenhamLine(x, y, x1, y1);
         break;
+      case "notint":
+        lineNotInt({ x, y }, { x: x1, y: y1 });
+        break;
       case "brez_circle":
         let r = Math.sqrt((x1 - x) ** 2 + (y1 - y) ** 2);
         BresenhamCircle(x, y, r);
@@ -159,6 +163,7 @@ function CGPage() {
           >
             <Radio.Button value="dda">DDA</Radio.Button>
             <Radio.Button value="brez">Брезенхем</Radio.Button>
+            <Radio.Button value="notint">Нецелые</Radio.Button>
           </Radio.Group>
           <h3>Круг</h3>
           <Radio.Group
@@ -175,7 +180,7 @@ function CGPage() {
             optionType="button"
             buttonStyle="solid"
           >
-            <Radio.Button value="direct_method">Прямой метод</Radio.Button>
+            <Radio.Button value="direct_method">Безье</Radio.Button>
             <Radio.Button value="reload">reload</Radio.Button>
           </Radio.Group>
           Количество точек

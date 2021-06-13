@@ -21,6 +21,48 @@ function setPixel(x, y) {
   context.putImageData(p, x, y);
 }
 
+// нецелочисленные
+export function lineNotInt(p1, p2) {
+  let x = 0;
+  let y = 0;
+  let a = Math.round(p2.x - p1.x);
+  let b = Math.round(p2.y - p1.y);
+  let x_mnoj = 1,
+    y_mnoj = 1;
+  if (a < 0) {
+    a = -a;
+    x_mnoj = -1;
+  }
+  if (b < 0) {
+    b = -b;
+    y_mnoj = -1;
+  }
+  let c = 1000;
+  let dh = c / Math.abs(p2.x - p1.x);
+  let h = 0;
+  let dv = c / Math.abs(p2.y - p1.y);
+  let v = 0;
+  while (h < c && v < c) {
+    setPixel(x * x_mnoj + Math.round(p1.x), y * y_mnoj + Math.round(p1.y));
+    if (h < v) {
+      x++;
+      h += dh;
+    } else if (h > v) {
+      y++;
+      v += dv;
+    } else {
+      setPixel(
+        x * x_mnoj + Math.round(p1.x),
+        (y + 1) * y_mnoj + Math.round(p1.y)
+      );
+      x++;
+      y++;
+      h += dh;
+      v += dv;
+    }
+  }
+}
+
 // Функция вычисления факториала
 function Fuctorial(n) {
   let res = 1;
@@ -64,6 +106,7 @@ export function DirectMethod(Arr) {
   }
 }
 
+// Линия брезенхема
 export default function BresenhamLine(x, y, x1, y1) {
   var dx = Math.abs(x1 - x);
   var dy = Math.abs(y1 - y);
@@ -86,7 +129,7 @@ export default function BresenhamLine(x, y, x1, y1) {
     }
   }
 }
-
+// Цифровой анализатор
 export function DDA(x0, y0, x1, y1) {
   const dx = x1 - x0,
     dy = y1 - y0,
@@ -239,6 +282,7 @@ export function setPoints(front_points) {
   console.log("end printing");
 }
 
+// Алгоритм кирус бека
 export function cyrusBeck(x1, y1, x2, y2) {
   var k = points.length;
   var d = [x2 - x1, y2 - y1];
