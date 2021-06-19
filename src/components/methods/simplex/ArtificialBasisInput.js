@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react";
 import "../simplex.css";
 import { Button, Form, InputNumber, Select } from "antd";
-import startArtificialSolution from "./artificialBasis";
+import StartArtificialSolution from "./ArtificialBasisAlgorithm.js";
+import FirstTable from "./artifcialBasis/manualArtificial";
 import Title from "antd/lib/typography/Title";
 import { ExperimentOutlined, HighlightOutlined } from "@ant-design/icons";
 import Checkbox from "antd/lib/checkbox/Checkbox";
@@ -21,7 +22,8 @@ function ArtificialBasis(props) {
   let restr = [];
   let r = [];
   let table = [];
-  function onStartSolution() {
+
+  function onStart(param) {
     for (let i = 0; i < countRestrictions; i++) {
       for (let j = 0; j < countVariables + 1; j++) {
         if (!restrictions[i]) restrictions[i] = [];
@@ -41,23 +43,44 @@ function ArtificialBasis(props) {
     // }
     // console.log("basiseeees:", basises);
     addArrayAdded();
-    let copy = JSON.parse(
-      JSON.stringify(
-        startArtificialSolution(
-          countVariables,
-          func,
-          countRestrictions,
-          restrictions,
-          minMax,
-          // TODO: нужен фикс, а то при повторном нет добавленных
-          added.length != 0 ? added : addedRef.current
-        )
-      )
-    );
-    props.setArtificialBasisTable([...copy[0]]);
-    props.setSimplexTable([...copy[1]]);
+    let copy;
+    switch (param) {
+      case "auto":
+        copy = JSON.parse(
+          JSON.stringify(
+            StartArtificialSolution(
+              countVariables,
+              func,
+              countRestrictions,
+              restrictions,
+              minMax,
+              added.length != 0 ? added : addedRef.current
+            )
+          )
+        );
+        props.setArtificialBasisTable([...copy[0]]);
+        props.setSimplexTable([...copy[1]]);
+        break;
+      case "manual":
+        copy = JSON.parse(
+          JSON.stringify(
+            // тут надо ручное
+            FirstTable(
+              countVariables,
+              func,
+              countRestrictions,
+              restrictions,
+              minMax,
+              added.length != 0 ? added : addedRef.current
+            )
+          )
+        );
+        props.setArtificialBasisTable([copy[0][copy[0].length - 1]]);
+        break;
+      default:
+        break;
+    }
   }
-
   function addRestrictions(i, j, value) {
     let arr = restrictions;
     if (!arr[i]) arr[i] = [];
@@ -243,7 +266,7 @@ function ArtificialBasis(props) {
         <Form.Item>
           <Button
             type="primary"
-            onClick={(e) => onStartSolution()}
+            onClick={(e) => onStart("auto")}
             icon={<ExperimentOutlined />}
           >
             Автоматическое решение
@@ -251,7 +274,7 @@ function ArtificialBasis(props) {
 
           <Button
             type="primary"
-            onClick={(e) => onStartSolution()}
+            onClick={(e) => onStart("manual")}
             icon={<HighlightOutlined />}
             style={{ marginLeft: "8px" }}
           >

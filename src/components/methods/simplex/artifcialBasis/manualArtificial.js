@@ -1,12 +1,14 @@
-import { setF, setSimplex } from "./simplexAlgorithm";
-export default function startArtificialSolution(
+import { setF, setSimplex } from "../simplexAlgorithm";
+export default function FirstTable(
   countVariables,
   func,
   countRestrictions,
   restrictions,
   minMax,
-  added
+  added,
+  step = 0
 ) {
+  let artNsimplex = [];
   let allParams = [[], []];
   console.log("added", added);
   // делаем таблицу искусственного базиса
@@ -50,8 +52,12 @@ export default function startArtificialSolution(
       helpOther++;
     }
   }
-  console.log({ artificialTable, allParams });
-  let tables = setArtificialBasis(artificialTable, allParams);
+  console.log("lastrowTable", { artificialTable, allParams });
+  let tables = setArtificialBasis(artificialTable, allParams, step);
+  if (step === 0) {
+    artNsimplex.push(tables);
+    return artNsimplex;
+  }
   let needSum = setAfterArtificial(
     tables[tables.length - 1].artificialTable,
     allParams,
@@ -64,16 +70,13 @@ export default function startArtificialSolution(
   let goSimplexTable = tables[tables.length - 1].artificialTable;
   goSimplexTable.push(mylittlepony);
   let simplexTable = setSimplex(goSimplexTable, allParams, countVariables);
-  let artNsimplex = [];
-  let simplexhelp = [];
 
-  simplexhelp.push();
   artNsimplex.push(tables);
   artNsimplex.push(simplexTable);
   return artNsimplex;
 }
 
-function setArtificialBasis(artificialTable, allParams) {
+function setArtificialBasis(artificialTable, allParams, step) {
   let column = artificialTable[0].length;
   let lastCol = artificialTable[0].length - 1;
   let row = artificialTable.length;
@@ -88,35 +91,37 @@ function setArtificialBasis(artificialTable, allParams) {
   let allTables = [];
 
   // TODO: Если весь столбец <0, то функция неограничена снизу
-  for (let step = 0; ; step++) {
-    column = artificialTable[0].length;
-    lastCol = artificialTable[0].length - 1;
-    row = artificialTable.length;
-    lastRow = artificialTable.length - 1;
-    // TODO: ДЕЛАТЬ КОПИИ МАССИВОВ ИЛИ НЕТ!??! ВОТ В ЧЕМ ВОПРОС
-    // Ищем минимальное неотриц из всех
+  //   for (let step = 0; ; step++) {
 
-    rowMin = 0;
-    colMin = 0;
-    for (let k = 0; k < lastCol; k++) {
-      if (artificialTable[lastRow][k] < 0) {
-        for (let i = 0; i < lastRow; i++) {
-          // TODO: Посмотреть что там с 0 в значениях и функциях
-          if (artificialTable[i][k] <= 0) continue;
-          notMin = +(1 / artificialTable[i][k]).toFixed(2);
-          if (min > notMin) {
-            rowMin = i;
-            colMin = k;
-            min = notMin;
-            pivot = artificialTable[i][k];
-          }
+  column = artificialTable[0].length;
+  lastCol = artificialTable[0].length - 1;
+  row = artificialTable.length;
+  lastRow = artificialTable.length - 1;
+  // TODO: ДЕЛАТЬ КОПИИ МАССИВОВ ИЛИ НЕТ!??! ВОТ В ЧЕМ ВОПРОС
+  // Ищем минимальное неотриц из всех
+
+  rowMin = 0;
+  colMin = 0;
+  for (let k = 0; k < lastCol; k++) {
+    if (artificialTable[lastRow][k] < 0) {
+      for (let i = 0; i < lastRow; i++) {
+        // TODO: Посмотреть что там с 0 в значениях и функциях
+        if (artificialTable[i][k] <= 0) continue;
+        notMin = +(1 / artificialTable[i][k]).toFixed(2);
+        if (min > notMin) {
+          rowMin = i;
+          colMin = k;
+          min = notMin;
+          pivot = artificialTable[i][k];
         }
       }
     }
-    // let nullsum = 0;
-    // for (let i = 0; i <= lastCol; i++) {
-    //   nullsum += artificialTable[lastRow][i];
-    // }
+  }
+  // let nullsum = 0;
+  // for (let i = 0; i <= lastCol; i++) {
+  //   nullsum += artificialTable[lastRow][i];
+  // }
+  if (step === 0) {
     allTables.push({
       artificialTable: JSON.parse(JSON.stringify(artificialTable)),
       step,
@@ -124,71 +129,74 @@ function setArtificialBasis(artificialTable, allParams) {
       allParams: JSON.parse(JSON.stringify(allParams)),
       pivot: { rowMin, colMin },
     });
-    if (step === row - 1) {
-      console.log("Конец искусственного базиса:", { allTables });
-      return allTables;
-    }
-    for (let i = 0; i < row; i++) {
-      coeff[i] = artificialTable[i][colMin];
-    }
-    console.log("min", { artificialTable, rowMin, colMin, min, pivot });
-    artificialTable[rowMin][colMin] = min;
-    // Меняем столбец
-    for (let i = 0; i < row; i++) {
-      if (i === rowMin) continue;
-      artificialTable[i][colMin] = +(
-        -artificialTable[i][colMin] / pivot
-      ).toFixed(2);
-    }
-    // Меняем строчку
-    for (let i = 0; i < column; i++) {
-      if (i === colMin) continue;
-      artificialTable[rowMin][i] = +(
-        artificialTable[rowMin][i] / pivot
-      ).toFixed(2);
-    }
-
-    // Меняем переменные (для отрисовки потом)
-    // basises[]
-    helperParam = allParams[0][rowMin].param;
-    helperNum = allParams[0][rowMin].num;
-
-    allParams[0][rowMin].param = allParams[1][colMin].param;
-    allParams[0][rowMin].num = allParams[1][colMin].num;
-
-    allParams[1][colMin].param = helperParam;
-    allParams[1][colMin].num = helperNum;
-    helperParam = -1;
-    helperNum = -1;
-
-    console.log("Поменял столбец и строчку", {
-      artificialTable,
-      rowMin,
-      colMin,
-      min,
-      pivot,
-    });
-    console.log(allParams);
-
-    // Вычисляем строчки (но идем по столбцам, т.к. js плох в массивы или я туплю)
-    for (let i = 0; i < row; i++) {
-      if (i === rowMin) continue;
-      for (let j = 0; j < column; j++) {
-        if (j === colMin) continue;
-        artificialTable[i][j] = +(
-          artificialTable[i][j] -
-          coeff[i] * artificialTable[rowMin][j]
-        ).toFixed(2);
-      }
-    }
-    // console.log("before splice:", { artificialTable });
-    for (let i = 0; i < row; i++) {
-      artificialTable[i].splice(colMin, 1);
-    }
-    allParams[1].splice(colMin, 1);
-    console.log("after splice:", { artificialTable });
-    min = 9999;
+    return allTables;
   }
+
+  if (step === row - 1) {
+    console.log("Конец искусственного базиса:", { allTables });
+    return allTables;
+  }
+  for (let i = 0; i < row; i++) {
+    coeff[i] = artificialTable[i][colMin];
+  }
+  console.log("min", { artificialTable, rowMin, colMin, min, pivot });
+  artificialTable[rowMin][colMin] = min;
+  // Меняем столбец
+  for (let i = 0; i < row; i++) {
+    if (i === rowMin) continue;
+    artificialTable[i][colMin] = +(-artificialTable[i][colMin] / pivot).toFixed(
+      2
+    );
+  }
+  // Меняем строчку
+  for (let i = 0; i < column; i++) {
+    if (i === colMin) continue;
+    artificialTable[rowMin][i] = +(artificialTable[rowMin][i] / pivot).toFixed(
+      2
+    );
+  }
+
+  // Меняем переменные (для отрисовки потом)
+  // basises[]
+  helperParam = allParams[0][rowMin].param;
+  helperNum = allParams[0][rowMin].num;
+
+  allParams[0][rowMin].param = allParams[1][colMin].param;
+  allParams[0][rowMin].num = allParams[1][colMin].num;
+
+  allParams[1][colMin].param = helperParam;
+  allParams[1][colMin].num = helperNum;
+  helperParam = -1;
+  helperNum = -1;
+
+  console.log("Поменял столбец и строчку", {
+    artificialTable,
+    rowMin,
+    colMin,
+    min,
+    pivot,
+  });
+  console.log(allParams);
+
+  // Вычисляем строчки (но идем по столбцам, т.к. js плох в массивы или я туплю)
+  for (let i = 0; i < row; i++) {
+    if (i === rowMin) continue;
+    for (let j = 0; j < column; j++) {
+      if (j === colMin) continue;
+      artificialTable[i][j] = +(
+        artificialTable[i][j] -
+        coeff[i] * artificialTable[rowMin][j]
+      ).toFixed(2);
+    }
+  }
+  // console.log("before splice:", { artificialTable });
+  for (let i = 0; i < row; i++) {
+    artificialTable[i].splice(colMin, 1);
+  }
+  allParams[1].splice(colMin, 1);
+  console.log("after splice:", { artificialTable });
+  min = 9999;
+  return allTables;
 }
 
 function setAfterArtificial(table, allParams, func, countVariables) {
