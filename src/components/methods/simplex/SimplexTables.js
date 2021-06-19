@@ -1,13 +1,16 @@
 import React from "react";
 import "../simplex.css";
+var Fraction = require("fraction.js");
+
 export default function SimplexTables(props) {
   let r = [];
   let table = [];
   let restr = [];
   let param = props.simplexTable;
-  let simplexTable = param.simplexTable;
-  let countVariables = simplexTable.length;
-  let countRestrictions = simplexTable[0].length;
+  let simplexTable = param.simplexTable || param.artificialTable;
+  let { colMin, rowMin } = param.pivot;
+  let countVariables = simplexTable[0].length;
+  let countRestrictions = simplexTable.length;
   let allParams = param.allParams;
   //   console.log("simtable", param.simplexTable);
   function parseSimplexTable() {
@@ -37,7 +40,17 @@ export default function SimplexTables(props) {
             );
           count++;
         }
-        r.push(<td>{simplexTable[i][j]}</td>);
+        if (i === rowMin && j === colMin) {
+          r.push(
+            <td style={{ backgroundColor: "yellow" }}>
+              {simplexTable[i][j]}
+              {/* {new Fraction(simplexTable[i][j]).toFraction()} */}
+            </td>
+          );
+        } else {
+          r.push(<td>{simplexTable[i][j]}</td>);
+          // r.push(<td>{new Fraction(simplexTable[i][j]).toFraction()}</td>);
+        }
       }
       table.push(<tr>{[...r]}</tr>);
       // TODO: Фикс блять этой хуйни (повторное нажатие на решение)

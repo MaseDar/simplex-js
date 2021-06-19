@@ -71,35 +71,18 @@ export default function startSolution(
   // console.log("beforeSimplex:", beforeSimplex)
   // console.log("func", func);
 
-  let newCount = 0;
-  let beforeCount = 0;
-  let last = beforeSimplex[0].length - 1;
-  // формируем коэфициенты f(x)
-  for (let i = 0; i < countVariables; i++) {
-    if (basises[i]) {
-      for (let j = 0; j <= last; j++)
-        arrBeforeSimplex[i][j] = beforeSimplex[beforeCount][j] * -func[i]; // -func[i], потому что мы выражаем 1 переменную через другие, и при переносе знак меняется
-      arrBeforeSimplex[i][last] = beforeSimplex[beforeCount][last] * func[i]; // т.к. в выше мы все умножили на -1, но константа остается за =, поэтому её не умножаем на -1
-      beforeCount++;
-    } // Записываем свободные переменные в массив, чтобы потом их суммировать и получить mylittlepony[]
-    else if (newCount !== countVariables - count) {
-      for (let j = 0; j <= last; j++) arrBeforeSimplex[i][j] = 0;
-      arrBeforeSimplex[i][newCount] = func[i];
-      newCount++;
-    }
-  }
+  // Формируем массив начальной функции (для вычисления дальше)
+  arrBeforeSimplex = setAfterGauss(
+    arrBeforeSimplex,
+    beforeSimplex,
+    countVariables,
+    basises,
+    func,
+    count
+  );
   // Создаем массив итоговой функции f(x) и заполняем 0
   let mylittlepony = [];
-  for (let i = 0; i < arrBeforeSimplex[0].length; i++) mylittlepony[i] = 0;
-
-  // Вычисляем функцию f(x). Например было f(x) = 4x1+2x2+3х3+4х4, где х1 и х2 - базисы
-  // Мы вычислели f(x), выраженную через базисные переменные x1 и x2. (Пояснение в самом верху, где r(x) - arrBeforeSimplex )
-  for (let i = 0; i < arrBeforeSimplex[0].length; i++)
-    for (let j = 0; j < arrBeforeSimplex.length; j++)
-      mylittlepony[i] = +(mylittlepony[i] + arrBeforeSimplex[j][i]).toFixed(2);
-  // Изменяем константу для записи в симплекс таблицу (пишем с отрицательным числом)
-  mylittlepony[mylittlepony.length - 1] =
-    -mylittlepony[mylittlepony.length - 1];
+  mylittlepony = setF(arrBeforeSimplex);
 
   console.log("MY LITTLE PONY!!!!!!", mylittlepony);
   console.log("f(x)", arrBeforeSimplex);
@@ -122,7 +105,7 @@ export default function startSolution(
       allParams[0][helpBasis] = {
         param: "x" + help,
         num: i,
-        column: lastCol,
+        column: 0,
         row: helpBasis,
       };
       helpBasis++;
@@ -130,13 +113,66 @@ export default function startSolution(
       allParams[1][helpOther] = {
         param: "x" + help,
         num: i,
-        column: helpBasis,
-        row: lastRow,
+        column: helpOther,
+        row: 0,
       };
       helpOther++;
     }
   }
 
+  console.log("allParams:::", allParams);
+  let simplex = [];
+  simplex = setSimplex(simplexTable, allParams, countVariables);
+  return simplex;
+}
+
+// Суммирует массив F (в верху коммент, как получается mylittlepony)
+export function setAfterGauss(
+  arrBeforeSimplex,
+  beforeSimplex,
+  countVariables,
+  basises,
+  func,
+  count
+) {
+  let newCount = 0;
+  let beforeCount = 0;
+  let last = beforeSimplex[0].length - 1;
+  // формируем коэфициенты f(x)
+  for (let i = 0; i < countVariables; i++) {
+    if (basises[i]) {
+      for (let j = 0; j <= last; j++)
+        arrBeforeSimplex[i][j] = beforeSimplex[beforeCount][j] * -func[i]; // -func[i], потому что мы выражаем 1 переменную через другие, и при переносе знак меняется
+      arrBeforeSimplex[i][last] = beforeSimplex[beforeCount][last] * func[i]; // т.к. в выше мы все умножили на -1, но константа остается за =, поэтому её не умножаем на -1
+      beforeCount++;
+    } // Записываем свободные переменные в массив, чтобы потом их суммировать и получить mylittlepony[]
+    else if (newCount !== countVariables - count) {
+      for (let j = 0; j <= last; j++) arrBeforeSimplex[i][j] = 0;
+      arrBeforeSimplex[i][newCount] = func[i];
+      newCount++;
+    }
+  }
+  return arrBeforeSimplex;
+}
+export function setF(arrBeforeSimplex) {
+  let mylittlepony = [];
+  for (let i = 0; i < arrBeforeSimplex[0].length; i++) mylittlepony[i] = 0;
+  // Вычисляем функцию f(x). Например было f(x) = 4x1+2x2+3х3+4х4, где х1 и х2 - базисы
+  // Мы вычислели f(x), выраженную через базисные переменные x1 и x2. (Пояснение в самом верху, где r(x) - arrBeforeSimplex )
+  for (let i = 0; i < arrBeforeSimplex[0].length; i++)
+    for (let j = 0; j < arrBeforeSimplex.length; j++)
+      mylittlepony[i] = +(mylittlepony[i] + arrBeforeSimplex[j][i]).toFixed(2);
+  // Изменяем константу для записи в симплекс таблицу (пишем с отрицательным числом)
+  mylittlepony[mylittlepony.length - 1] =
+    -mylittlepony[mylittlepony.length - 1];
+  return mylittlepony;
+}
+
+export function setArtificialBasis(simplexTable, allParams) {
+  let column = simplexTable[0].length;
+  let lastCol = simplexTable[0].length - 1;
+  let row = simplexTable.length;
+  let lastRow = simplexTable.length - 1;
   let min = 9999;
   let notMin = 9999;
   let rowMin = 0,
@@ -148,6 +184,10 @@ export default function startSolution(
 
   // TODO: Если весь столбец <0, то функция неограничена снизу
   for (let step = 0; ; step++) {
+    column = simplexTable[0].length;
+    lastCol = simplexTable[0].length - 1;
+    row = simplexTable.length;
+    lastRow = simplexTable.length - 1;
     // TODO: ДЕЛАТЬ КОПИИ МАССИВОВ ИЛИ НЕТ!??! ВОТ В ЧЕМ ВОПРОС
     // Ищем минимальное неотриц из всех
     allTables.push({
@@ -171,6 +211,119 @@ export default function startSolution(
         }
       }
     }
+    let nullsum = 0;
+    for (let i = 0; i <= lastCol; i++) {
+      nullsum += simplexTable[lastRow][i];
+    }
+    if (nullsum === 0) {
+      console.log("Конец искусственного базиса:", { allTables });
+      return allTables;
+    }
+    if (min === 9999) {
+      // костыль для выхода из цикла
+      // let x = [];
+      // for (let i = 0; i < countVariables; i++) {
+      //   x[i] = 0;
+      //   allParams[0].map((el) =>
+      //     el.num === i ? (x[i] = simplexTable[el.row][el.column]) : null
+      //   );
+      // }
+      console.log("THE END:", { allTables });
+
+      return allTables;
+    }
+    for (let i = 0; i < row; i++) coeff[i] = simplexTable[i][colMin];
+    console.log("min", { simplexTable, rowMin, colMin, min, pivot });
+    simplexTable[rowMin][colMin] = min;
+    // Меняем столбец
+    for (let i = 0; i < row; i++) {
+      if (i === rowMin) continue;
+      simplexTable[i][colMin] = +(-simplexTable[i][colMin] / pivot).toFixed(2);
+    }
+    // Меняем строчку
+    for (let i = 0; i < column; i++) {
+      if (i === colMin) continue;
+      simplexTable[rowMin][i] = +(simplexTable[rowMin][i] / pivot).toFixed(2);
+    }
+
+    // Меняем переменные (для отрисовки потом)
+    // basises[]
+    helperParam = allParams[0][rowMin].param;
+    helperNum = allParams[0][rowMin].num;
+
+    allParams[0][rowMin].param = allParams[1][colMin].param;
+    allParams[0][rowMin].num = allParams[1][colMin].num;
+
+    allParams[1][colMin].param = helperParam;
+    allParams[1][colMin].num = helperNum;
+    helperParam = -1;
+    helperNum = -1;
+
+    console.log("Поменял столбец и строчку", {
+      simplexTable,
+      rowMin,
+      colMin,
+      min,
+      pivot,
+    });
+    console.log(allParams);
+
+    // Вычисляем строчки (но идем по столбцам, т.к. js плох в массивы или я туплю)
+    for (let i = 0; i < row; i++) {
+      if (i === rowMin) continue;
+      for (let j = 0; j < column; j++) {
+        if (j === colMin) continue;
+        simplexTable[i][j] = +(
+          simplexTable[i][j] -
+          coeff[i] * simplexTable[rowMin][j]
+        ).toFixed(2);
+      }
+    }
+    min = 9999;
+  }
+}
+
+export function setSimplex(simplexTable, allParams, countVariables) {
+  let column = simplexTable[0].length;
+  let lastCol = simplexTable[0].length - 1;
+  let row = simplexTable.length;
+  let lastRow = simplexTable.length - 1;
+  let min = 9999;
+  let notMin = 9999;
+  let rowMin = 0,
+    colMin = 0;
+  let pivot = 0;
+  let helperParam, helperNum;
+  let coeff = [];
+  let allTables = [];
+
+  // TODO: Если весь столбец <0, то функция неограничена снизу
+  for (let step = 0; ; step++) {
+    // TODO: ДЕЛАТЬ КОПИИ МАССИВОВ ИЛИ НЕТ!??! ВОТ В ЧЕМ ВОПРОС
+    // Ищем минимальное неотриц из всех
+
+    for (let k = 0; k < lastCol; k++) {
+      if (simplexTable[lastRow][k] < 0) {
+        for (let i = 0; i < lastRow; i++) {
+          // TODO: Посмотреть что там с 0 в значениях и функциях
+          if (simplexTable[i][k] <= 0) continue;
+          notMin = +(1 / simplexTable[i][k]).toFixed(2);
+          if (min > notMin) {
+            rowMin = i;
+            colMin = k;
+            min = notMin;
+            pivot = simplexTable[i][k];
+          }
+        }
+      }
+    }
+    allTables.push({
+      simplexTable: JSON.parse(JSON.stringify(simplexTable)),
+      step,
+      f: -simplexTable[lastRow][lastCol],
+      allParams: JSON.parse(JSON.stringify(allParams)),
+      pivot: { rowMin, colMin },
+    });
     // костыль для выхода из цикла
     if (min === 9999) {
       let x = [];
@@ -225,8 +378,10 @@ export default function startSolution(
       if (i === rowMin) continue;
       for (let j = 0; j < column; j++) {
         if (j === colMin) continue;
-        simplexTable[i][j] =
-          simplexTable[i][j] - coeff[i] * simplexTable[rowMin][j];
+        simplexTable[i][j] = +(
+          simplexTable[i][j] -
+          coeff[i] * simplexTable[rowMin][j]
+        ).toFixed(2);
       }
     }
     min = 9999;

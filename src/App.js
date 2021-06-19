@@ -23,6 +23,7 @@ import {
   Redirect,
 } from "react-router-dom";
 import Simplex from "./components/methods/simplex/Simplex";
+import ArtificialBasis from "./components/methods/simplex/ArtificialBasis";
 import Dev from "./components/Dev";
 import CGPage from "./components/computerGraphics/CGPage";
 import UlamSpiral from "./components/volch/UlamSpiral";
@@ -193,7 +194,7 @@ function MethodOptimize() {
         <Content style={{ padding: "0 24px", minHeight: "75vh" }}>
           <Switch>
             <Route exact path={`${match.url}/artificial`}>
-              <Dev />
+              <ArtificialBasis />
             </Route>
             <Route exact path={`${match.url}/simplex`}>
               <Simplex />
