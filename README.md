@@ -24,7 +24,7 @@ clone/fork this repository and use React.js for debug and run app
 # Colors of reference elements
 
 - ![#fff700](https://via.placeholder.com/15/fff700/000000?text=+) `Possible pivots`
-- ![#c5f015](https://via.placeholder.com/15/c5f015/000000?text=+) `Best pivot element`
+- ![#039411](https://via.placeholder.com/15/039411/000000?text=+) `Best pivot element`
 - ![#1589F0](https://via.placeholder.com/15/1589F0/000000?text=+) `Previous pivot element`
 
 ## RoadMap
@@ -78,7 +78,7 @@ clone/fork this repository and use React.js for debug and run app
 ## Цвета обозначения опорных элементов
 
 - ![#fff700](https://via.placeholder.com/15/fff700/000000?text=+) `Возможные опорные элементы`
-- ![#c5f015](https://via.placeholder.com/15/c5f015/000000?text=+) `Лучший опорный элемент`
+- ![#039411](https://via.placeholder.com/15/039411/000000?text=+) `Лучший опорный элемент`
 - ![#1589F0](https://via.placeholder.com/15/1589F0/000000?text=+) `Предыдущий опорный элемент`
 
 ### Главные:
