@@ -60,6 +60,7 @@ function ArtificialBasis(props) {
         );
         props.setArtificialBasisTable([...copy[0]]);
         props.setSimplexTable([...copy[1]]);
+        props.setAnotherTable([]);
         break;
       case "manual":
         copy = JSON.parse(
@@ -71,11 +72,20 @@ function ArtificialBasis(props) {
               countRestrictions,
               restrictions,
               minMax,
-              added.length != 0 ? added : addedRef.current
+              added.length != 0 ? added : addedRef.current,
+              0,
+              0,
+              [],
+              [],
+              -1,
+              -1,
+              0.000001
             )
           )
         );
-        props.setArtificialBasisTable([copy[0][copy[0].length - 1]]);
+        props.setSimplexTable([]);
+        props.setArtificialBasisTable([]);
+        props.setAnotherTable([...copy]);
         break;
       default:
         break;

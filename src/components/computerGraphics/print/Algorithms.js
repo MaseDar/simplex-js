@@ -23,12 +23,17 @@ function setPixel(x, y) {
 
 // нецелочисленные
 export function lineNotInt(p1, p2) {
-  let x = 0;
+  let x = 0; // Канонический случай: начальная точка
   let y = 0;
+
+  /* Приращения t, соответствующие смещениям от начальной
+  точки до границ первого пикселя. */
   let a = Math.round(p2.x - p1.x);
   let b = Math.round(p2.y - p1.y);
   let x_mnoj = 1,
     y_mnoj = 1;
+
+  // Направление движения по осям координат
   if (a < 0) {
     a = -a;
     x_mnoj = -1;
@@ -37,11 +42,13 @@ export function lineNotInt(p1, p2) {
     b = -b;
     y_mnoj = -1;
   }
+
   let c = 1000;
   let dh = c / Math.abs(p2.x - p1.x);
   let h = 0;
   let dv = c / Math.abs(p2.y - p1.y);
   let v = 0;
+
   while (h < c && v < c) {
     setPixel(x * x_mnoj + Math.round(p1.x), y * y_mnoj + Math.round(p1.y));
     if (h < v) {
@@ -51,6 +58,9 @@ export function lineNotInt(p1, p2) {
       y++;
       v += dv;
     } else {
+      // h = v : Вырожденный случай (см. рис. 3.5)
+      // рисуем произвольный из двух возможных пикселей,
+      // например, верхний:
       setPixel(
         x * x_mnoj + Math.round(p1.x),
         (y + 1) * y_mnoj + Math.round(p1.y)
