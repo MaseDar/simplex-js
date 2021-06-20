@@ -6,6 +6,7 @@ var Fraction = require("fraction.js");
 export default function ManualSimplexTablesDecimal(props) {
   let table = [];
   let restr = [];
+  // let r = [];
   let history = props.manualSimplexTable;
   let simplex = [];
   //   console.log("simtable", param.simplexTable);
@@ -13,8 +14,8 @@ export default function ManualSimplexTablesDecimal(props) {
   let helpColor = "yellow";
   //   const prevTh = useRef(null);
   //   const prevColor = useRef(null);
-  const prevTh = useRef(null);
-  const prevColor = useRef(null);
+  const prevTh = useRef();
+  const prevColor = useRef();
   function changeColor(event, param) {
     console.log("event", event);
     param.select = event.target.cloneNode(true);
@@ -124,7 +125,7 @@ export default function ManualSimplexTablesDecimal(props) {
           }
         }
         table.push(<tr>{[...r]}</tr>);
-
+        r.splice(0);
         if (params.select !== undefined)
           params.select.style.backgroundColor = "blue";
       }

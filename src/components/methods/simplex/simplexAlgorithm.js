@@ -1,4 +1,5 @@
 import GaussSolution from "./Gauss";
+import { changeFuncMinMax } from "./ArtificialBasisAlgorithm";
 var Fraction = require("fraction.js");
 export default function startSolution(
   countVariables,
@@ -90,7 +91,7 @@ export default function startSolution(
     beforeSimplex,
     countVariables,
     basises,
-    func,
+    changeFuncMinMax(func, minMax),
     count
   );
   // Создаем массив итоговой функции f(x) и заполняем 0

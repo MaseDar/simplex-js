@@ -1,6 +1,7 @@
 import { setF } from "../simplexAlgorithm";
+import { changeFuncMinMax } from "../ArtificialBasisAlgorithm";
 var Fraction = require("fraction.js");
-let func;
+let func = [];
 let countVariables;
 export default function FirstTable(
   _countVariables,
@@ -17,7 +18,7 @@ export default function FirstTable(
   pivotCol = -1,
   pivotValue = Fraction(0.000001)
 ) {
-  func = _func;
+  func = changeFuncMinMax(_func, minMax);
   countVariables = _countVariables;
   let artNsimplex = [];
   let allParams = [[], []];

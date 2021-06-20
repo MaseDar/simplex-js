@@ -13,6 +13,7 @@ export default function ManualTables(props) {
   let restr = [];
   let simplex = [];
   let artificial = [];
+  // let r = [];
   let simHistory = props.simplexTable;
   const artLastStep = useRef(0);
   let artHistory = props.artificialBasisTable;
@@ -20,8 +21,8 @@ export default function ManualTables(props) {
   let helpColor = "yellow";
   //   const prevTh = useRef(null);
   //   const prevColor = useRef(null);
-  const prevTh = useRef(null);
-  const prevColor = useRef(null);
+  const prevTh = useRef();
+  const prevColor = useRef();
   function changeColor(event, param) {
     console.log("event", event);
     param.select = event.target.cloneNode(true);
@@ -133,7 +134,7 @@ export default function ManualTables(props) {
           }
         }
         table.push(<tr>{[...r]}</tr>);
-
+        r.splice(0);
         if (simParam.select !== undefined)
           simParam.select.style.backgroundColor = "blue";
       }
@@ -277,7 +278,7 @@ export default function ManualTables(props) {
         }
         table.push(<tr>{[...r]}</tr>);
         // TODO: Фикс блять этой хуйни (повторное нажатие на решение)
-
+        r.splice(0);
         if (artParam.select !== undefined)
           artParam.select.style.backgroundColor = "blue";
       }

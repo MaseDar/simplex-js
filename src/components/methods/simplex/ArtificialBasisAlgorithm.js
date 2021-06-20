@@ -36,7 +36,7 @@ export default function StartArtificialSolution(
     helpOther = 0;
   for (let i = 0; i < added.length; i++) {
     let help = i + 1;
-    if (!!added[i] || i > countVariables) {
+    if (!!added[i] || i >= countVariables) {
       allParams[0][helpAdded] = {
         param: "x" + help,
         num: i,
@@ -56,6 +56,7 @@ export default function StartArtificialSolution(
   }
   console.log({ artificialTable, allParams });
   let tables = setArtificialBasis(artificialTable, allParams);
+  func = changeFuncMinMax(func, minMax);
   let needSum = setAfterArtificial(
     tables[tables.length - 1].artificialTable,
     allParams,
@@ -77,6 +78,16 @@ export default function StartArtificialSolution(
   artNsimplex.push(tables);
   artNsimplex.push(simplexTable);
   return artNsimplex;
+}
+
+export function changeFuncMinMax(func, minMax) {
+  let arr = [];
+  if (minMax === "max")
+    for (let i = 0; i < func.length; i++) {
+      arr[i] = -func[i];
+    }
+  else arr = [...func];
+  return arr;
 }
 
 function setArtificialBasis(artificialTable, allParams) {
@@ -215,9 +226,9 @@ function setAfterArtificial(table, allParams, func, countVariables) {
     if (basis[i] !== undefined) {
       num = basis[i];
       for (let j = 0; j <= last; j++)
-        arrTable[beforeCount][j] = Fraction(table[beforeCount][j]).mul(
-          -func[num]
-        ); // -func[i], потому что мы выражаем 1 переменную через другие, и при переносе знак меняется
+        arrTable[beforeCount][j] = Fraction(table[beforeCount][j])
+          .mul(func[num])
+          .mul(-1); // -func[i], потому что мы выражаем 1 переменную через другие, и при переносе знак меняется
       arrTable[beforeCount][last] = Fraction(table[beforeCount][last]).mul(
         func[num]
       ); // т.к. в выше мы все умножили на -1, но константа остается за =, поэтому её не умножаем на -1

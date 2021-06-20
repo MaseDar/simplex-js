@@ -145,7 +145,7 @@ function SimplexInput(props) {
         );
       }
       table.push(<tr>{[...r]}</tr>);
-      r = [];
+      r.splice(0);
     }
     return <table>{table}</table>;
   }

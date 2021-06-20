@@ -1,8 +1,9 @@
 import { setF, setAfterGauss } from "./simplexAlgorithm";
 import GaussSolution from "./Gauss";
 import { oneSimplex } from "./artifcialBasis/manualArtificial";
+import { changeFuncMinMax } from "./ArtificialBasisAlgorithm";
 var Fraction = require("fraction.js");
-let func;
+let func = [];
 let countVariables;
 export default function FirstSimplex(
   _countVariables,
@@ -12,7 +13,7 @@ export default function FirstSimplex(
   minMax,
   basises
 ) {
-  func = _func;
+  func = changeFuncMinMax(_func, minMax);
   countVariables = _countVariables;
 
   let arrBasis = [];

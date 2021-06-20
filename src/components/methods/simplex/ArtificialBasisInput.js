@@ -1,10 +1,11 @@
 import React, { useRef, useState } from "react";
-import "../simplex.css";
+
 import { Button, Form, InputNumber, Select } from "antd";
 import StartArtificialSolution from "./ArtificialBasisAlgorithm.js";
 import FirstTable from "./artifcialBasis/manualArtificial";
 import Title from "antd/lib/typography/Title";
 import { ExperimentOutlined, HighlightOutlined } from "@ant-design/icons";
+import "../simplex.css";
 
 const { Option } = Select;
 
@@ -57,6 +58,8 @@ function ArtificialBasis(props) {
             )
           )
         );
+        props.setSimplexTable([]);
+        props.setArtificialBasisTable([]);
         props.setArtificialBasisTable([...copy[0]]);
         props.setSimplexTable([...copy[1]]);
         props.setAnotherTable([]);
@@ -140,7 +143,7 @@ function ArtificialBasis(props) {
         );
       }
       table.push(<tr>{[...r]}</tr>);
-      r = [];
+      r.splice(0);
     }
     return <table>{table}</table>;
   }
