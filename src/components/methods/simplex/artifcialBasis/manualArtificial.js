@@ -1,4 +1,5 @@
-import { setF, setSimplex } from "../simplexAlgorithm";
+import { setF } from "../simplexAlgorithm";
+var Fraction = require("fraction.js");
 let func;
 let countVariables;
 export default function FirstTable(
@@ -14,7 +15,7 @@ export default function FirstTable(
   simpHistory = [],
   pivotRow = -1,
   pivotCol = -1,
-  pivotValue = 0.000001
+  pivotValue = Fraction(0.000001)
 ) {
   func = _func;
   countVariables = _countVariables;
@@ -34,6 +35,10 @@ export default function FirstTable(
     lastRowTable.push(columnSum);
   }
   inputTable.push(lastRowTable);
+
+  // перевод в дробные
+  for (let i = 0; i < inputTable.length; i++)
+    inputTable[i] = inputTable[i].map((el) => Fraction(el));
 
   let helpAdded = 0,
     helpOther = 0;
@@ -60,54 +65,7 @@ export default function FirstTable(
   console.log("lastrowTable", { inputTable, allParams });
   let table = {};
   let artivicialHistory = artHistory;
-  let simplexHistory = simpHistory;
-  let simplexTable = {};
   if (artStep === 0) {
-    table = setArtificialBasis(
-      inputTable,
-      allParams,
-      artStep,
-      pivotRow,
-      pivotCol,
-      pivotValue
-    );
-    artivicialHistory.push(table);
-    artNsimplex[0] = artivicialHistory;
-  } else if (artStep === inputTable.length - 1) {
-    if (simpStep === 0) {
-      let needSum = setAfterArtificial(
-        artivicialHistory[artivicialHistory.length - 1].artificialTable,
-        allParams
-      );
-      let mylittlepony = setF(needSum);
-      console.log("mylittlepony", mylittlepony);
-      artivicialHistory[artivicialHistory.length - 1].artificialTable.pop();
-      let goSimplexTable =
-        artivicialHistory[artivicialHistory.length - 1].artificialTable;
-      goSimplexTable.push(mylittlepony);
-      simplexTable = oneSimplex(
-        goSimplexTable,
-        allParams,
-        simpStep,
-        pivotRow,
-        pivotCol,
-        pivotValue
-      );
-      simplexHistory.push(simplexTable);
-      artNsimplex[1] = simplexHistory;
-    } else {
-      simplexTable = oneSimplex(
-        inputTable,
-        allParams,
-        simpStep,
-        pivotRow,
-        pivotCol,
-        pivotValue
-      );
-      simplexHistory.push(simplexTable);
-      artNsimplex[1] = simplexHistory;
-    }
-  } else {
     table = setArtificialBasis(
       inputTable,
       allParams,
@@ -120,8 +78,6 @@ export default function FirstTable(
     artNsimplex[0] = artivicialHistory;
   }
 
-  // artNsimplex.push(tables);
-  // artNsimplex.push(simplexTable);
   return artNsimplex;
 }
 
@@ -150,7 +106,7 @@ export function otherSteps(
       artStep,
       pivotRow,
       pivotCol,
-      pivotValue
+      Fraction(pivotValue)
     );
     artivicialHistory.push(table);
     artNsimplex[0] = artivicialHistory;
@@ -162,7 +118,7 @@ export function otherSteps(
         artStep,
         pivotRow,
         pivotCol,
-        pivotValue
+        Fraction(pivotValue)
       );
       artivicialHistory.push(table);
       artNsimplex[0] = artivicialHistory;
@@ -189,7 +145,7 @@ export function otherSteps(
         simpStep,
         -1,
         -1,
-        0.000001
+        Fraction(0.000001)
       );
       simplexHistory.push(simplexTable);
       artNsimplex[1] = simplexHistory;
@@ -200,7 +156,7 @@ export function otherSteps(
         simpStep,
         pivotRow,
         pivotCol,
-        pivotValue
+        Fraction(pivotValue)
       );
       simplexHistory.push(simplexTable);
       artNsimplex[0] = artivicialHistory;
@@ -213,7 +169,7 @@ export function otherSteps(
       artStep,
       pivotRow,
       pivotCol,
-      pivotValue
+      Fraction(pivotValue)
     );
     artivicialHistory.push(table);
     artNsimplex[0] = artivicialHistory;
@@ -246,7 +202,7 @@ function setArtificialBasis(
 
   let rowMin = pivotRow,
     colMin = pivotCol;
-  let min = +(1 / pivotValue).toFixed(2);
+  let min = Fraction(1).div(pivotValue);
 
   // TODO: Если весь столбец <0, то функция неограничена снизу
   //   for (let step = 0; ; step++) {
@@ -264,11 +220,12 @@ function setArtificialBasis(
   // Если выбрали ручной метод в первый раз, то формируем таблицу и выводим её
   if (step === 0) {
     for (let k = 0; k < lastCol; k++) {
-      if (artificialTable[lastRow][k] < 0) {
+      if (artificialTable[lastRow][k].s < 0) {
         for (let i = 0; i < lastRow; i++) {
           // TODO: Посмотреть что там с 0 в значениях и функциях
-          if (artificialTable[i][k] <= 0) continue;
-          notMin = +(1 / artificialTable[i][k]).toFixed(2);
+          if (artificialTable[i][k].s < 0 || artificialTable[i][k].n === 0)
+            continue;
+          notMin = Fraction(1).div(artificialTable[i][k]);
           maybe.push({
             row: i,
             column: k,
@@ -297,22 +254,22 @@ function setArtificialBasis(
 
   // Записываем коэфициенты для искусственного базиса
   for (let i = 0; i < row; i++) {
-    coeff[i] = artificialTable[i][colMin];
+    coeff[i] = Fraction(artificialTable[i][colMin]);
   }
   // console.log("min", { artificialTable, rowMin, colMin, min, pivot });
-  artificialTable[rowMin][colMin] = min;
+  artificialTable[rowMin][colMin] = Fraction(min);
   // Меняем столбец
   for (let i = 0; i < row; i++) {
     if (i === rowMin) continue;
-    artificialTable[i][colMin] = +(-artificialTable[i][colMin] / pivot).toFixed(
-      2
-    );
+    artificialTable[i][colMin] = Fraction(artificialTable[i][colMin])
+      .div(pivot)
+      .mul(-1);
   }
   // Меняем строчку
   for (let i = 0; i < column; i++) {
     if (i === colMin) continue;
-    artificialTable[rowMin][i] = +(artificialTable[rowMin][i] / pivot).toFixed(
-      2
+    artificialTable[rowMin][i] = Fraction(artificialTable[rowMin][i]).div(
+      pivot
     );
   }
 
@@ -343,10 +300,9 @@ function setArtificialBasis(
     if (i === rowMin) continue;
     for (let j = 0; j < column; j++) {
       if (j === colMin) continue;
-      artificialTable[i][j] = +(
-        artificialTable[i][j] -
-        coeff[i] * artificialTable[rowMin][j]
-      ).toFixed(2);
+      artificialTable[i][j] = Fraction(artificialTable[i][j]).sub(
+        Fraction(coeff[i]).mul(artificialTable[rowMin][j])
+      );
     }
   }
   // console.log("before splice:", { artificialTable });
@@ -366,12 +322,16 @@ function setArtificialBasis(
   min = 9999;
   maybe = [];
   // Поиск опорных точек
+  tableObj = {};
+  rowMin = -1;
+  colMin = -1;
   for (let k = 0; k < lastCol; k++) {
-    if (artificialTable[lastRow][k] < 0) {
+    if (artificialTable[lastRow][k].s < 0) {
       for (let i = 0; i < lastRow; i++) {
         // TODO: Посмотреть что там с 0 в значениях и функциях
-        if (artificialTable[i][k] <= 0) continue;
-        notMin = +(1 / artificialTable[i][k]).toFixed(2);
+        if (artificialTable[i][k].s < 0 || artificialTable[i][k].n === 0)
+          continue;
+        notMin = Fraction(1).div(artificialTable[i][k]);
         maybe.push({
           row: i,
           column: k,
@@ -414,39 +374,39 @@ function setAfterArtificial(table, allParams) {
   let notBasis = [];
   allParams[0].map((e) => basis.push(e.num));
   allParams[1].map((e) => notBasis.push(e.num));
-  let boolean = false;
-  let boolean2 = false;
   let num = -1;
   // формируем коэфициенты f(x)
   for (let i = 0; i < countVariables; i++) {
     if (basis[i] !== undefined) {
       num = basis[i];
       for (let j = 0; j <= last; j++)
-        arrTable[beforeCount][j] = table[beforeCount][j] * -func[num]; // -func[i], потому что мы выражаем 1 переменную через другие, и при переносе знак меняется
-      arrTable[beforeCount][last] = table[beforeCount][last] * func[num]; // т.к. в выше мы все умножили на -1, но константа остается за =, поэтому её не умножаем на -1
+        arrTable[beforeCount][j] = Fraction(table[beforeCount][j])
+          .mul(func[num])
+          .mul(-1); // -func[i], потому что мы выражаем 1 переменную через другие, и при переносе знак меняется
+      arrTable[beforeCount][last] = Fraction(table[beforeCount][last]).mul(
+        func[num]
+      ); // т.к. в выше мы все умножили на -1, но константа остается за =, поэтому её не умножаем на -1
       beforeCount++;
     } // Записываем свободные переменные в массив, чтобы потом их суммировать и получить mylittlepony[]
     else if (notBasis[newCount] !== undefined) {
       num = notBasis[newCount];
       for (let j = 0; j <= last; j++) {
-        arrTable[beforeCount][j] = 0;
+        arrTable[beforeCount][j] = Fraction(0);
       }
-      arrTable[beforeCount][newCount] = func[num];
+      arrTable[beforeCount][newCount] = Fraction(func[num]);
       newCount++;
       beforeCount++;
     } else {
       for (let j = 0; j <= last; j++) {
-        arrTable[i][j] = 0;
+        arrTable[i][j] = Fraction(0);
       }
     }
-    boolean = false;
-    boolean2 = false;
     num = -1;
   }
   return arrTable;
 }
 
-function oneSimplex(
+export function oneSimplex(
   simplexTable,
   allParams,
   step,
@@ -462,11 +422,10 @@ function oneSimplex(
   let notMin = 9999;
   let rowMin = pivotRow,
     colMin = pivotCol;
-  let min = +(1 / pivotValue).toFixed(2);
+  let min = Fraction(1).div(pivotValue);
   let pivot = pivotValue;
   let helperParam, helperNum;
   let coeff = [];
-  let allTables = [];
   let table = {};
 
   // костыль для выхода из цикла
@@ -483,11 +442,11 @@ function oneSimplex(
   // Если выбрали ручной метод в первый раз, то формируем таблицу и выводим её
   if (step === 0) {
     for (let k = 0; k < lastCol; k++) {
-      if (simplexTable[lastRow][k] < 0) {
+      if (simplexTable[lastRow][k].s < 0) {
         for (let i = 0; i < lastRow; i++) {
           // TODO: Посмотреть что там с 0 в значениях и функциях
-          if (simplexTable[i][k] <= 0) continue;
-          notMin = +(1 / simplexTable[i][k]).toFixed(2);
+          if (simplexTable[i][k].s < 0 || simplexTable[i][k].n === 0) continue;
+          notMin = Fraction(1).div(simplexTable[i][k]);
           maybe.push({
             row: i,
             column: k,
@@ -509,24 +468,27 @@ function oneSimplex(
       f: -simplexTable[lastRow][lastCol],
       allParams: JSON.parse(JSON.stringify(allParams)),
       pivot: { rowMin, colMin },
+      maybe,
     };
     return table;
   }
 
   for (let i = 0; i < row; i++) {
-    coeff[i] = simplexTable[i][colMin];
+    coeff[i] = Fraction(simplexTable[i][colMin]);
   }
   // console.log("min", { simplexTable, rowMin, colMin, min, pivot });
-  simplexTable[rowMin][colMin] = min;
+  simplexTable[rowMin][colMin] = Fraction(min);
   // Меняем столбец
   for (let i = 0; i < row; i++) {
     if (i === rowMin) continue;
-    simplexTable[i][colMin] = +(-simplexTable[i][colMin] / pivot).toFixed(2);
+    simplexTable[i][colMin] = Fraction(simplexTable[i][colMin])
+      .div(pivot)
+      .mul(-1);
   }
   // Меняем строчку
   for (let i = 0; i < column; i++) {
     if (i === colMin) continue;
-    simplexTable[rowMin][i] = +(simplexTable[rowMin][i] / pivot).toFixed(2);
+    simplexTable[rowMin][i] = Fraction(simplexTable[rowMin][i]).div(pivot);
   }
 
   // Меняем переменные (для отрисовки потом)
@@ -556,22 +518,22 @@ function oneSimplex(
     if (i === rowMin) continue;
     for (let j = 0; j < column; j++) {
       if (j === colMin) continue;
-      simplexTable[i][j] = +(
-        simplexTable[i][j] -
-        coeff[i] * simplexTable[rowMin][j]
-      ).toFixed(2);
+      simplexTable[i][j] = Fraction(simplexTable[i][j]).sub(
+        Fraction(coeff[i]).mul(simplexTable[rowMin][j])
+      );
     }
   }
   maybe = [];
 
   // Если выбрали ручной метод в первый раз, то формируем таблицу и выводим её
-
+  rowMin = -1;
+  colMin = -1;
   for (let k = 0; k < lastCol; k++) {
-    if (simplexTable[lastRow][k] < 0) {
+    if (simplexTable[lastRow][k].s < 0) {
       for (let i = 0; i < lastRow; i++) {
         // TODO: Посмотреть что там с 0 в значениях и функциях
-        if (simplexTable[i][k] <= 0) continue;
-        notMin = +(1 / simplexTable[i][k]).toFixed(2);
+        if (simplexTable[i][k].s < 0 || simplexTable[i][k].n === 0) continue;
+        notMin = Fraction(1).div(simplexTable[i][k]);
         maybe.push({
           row: i,
           column: k,
@@ -593,6 +555,7 @@ function oneSimplex(
     f: -simplexTable[lastRow][lastCol],
     allParams: JSON.parse(JSON.stringify(allParams)),
     pivot: { rowMin, colMin },
+    maybe,
   };
   return table;
 }

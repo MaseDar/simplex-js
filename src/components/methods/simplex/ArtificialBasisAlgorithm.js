@@ -1,4 +1,5 @@
 import { setF, setSimplex } from "./simplexAlgorithm";
+var Fraction = require("fraction.js");
 export default function StartArtificialSolution(
   countVariables,
   func,
@@ -22,6 +23,9 @@ export default function StartArtificialSolution(
     lastRowTable.push(columnSum);
   }
   artificialTable.push(lastRowTable);
+  // перевод в дробные
+  for (let i = 0; i < artificialTable.length; i++)
+    artificialTable[i] = artificialTable[i].map((el) => Fraction(el));
 
   //   let column = artificialTable[0].length;
   //   let lastCol = artificialTable[0].length - 1;
@@ -60,8 +64,10 @@ export default function StartArtificialSolution(
   );
   let mylittlepony = setF(needSum);
   console.log("mylittlepony", mylittlepony);
-  tables[tables.length - 1].artificialTable.pop();
-  let goSimplexTable = tables[tables.length - 1].artificialTable;
+  let goSimplexTable = JSON.parse(
+    JSON.stringify(tables[tables.length - 1].artificialTable)
+  );
+  goSimplexTable.pop();
   goSimplexTable.push(mylittlepony);
   let simplexTable = setSimplex(goSimplexTable, allParams, countVariables);
   let artNsimplex = [];
@@ -82,7 +88,7 @@ function setArtificialBasis(artificialTable, allParams) {
   let notMin = 9999;
   let rowMin = 0,
     colMin = 0;
-  let pivot = 0;
+  let pivot = Fraction(0);
   let helperParam, helperNum;
   let coeff = [];
   let allTables = [];
@@ -99,11 +105,12 @@ function setArtificialBasis(artificialTable, allParams) {
     rowMin = 0;
     colMin = 0;
     for (let k = 0; k < lastCol; k++) {
-      if (artificialTable[lastRow][k] < 0) {
+      if (artificialTable[lastRow][k].s < 0) {
         for (let i = 0; i < lastRow; i++) {
           // TODO: Посмотреть что там с 0 в значениях и функциях
-          if (artificialTable[i][k] <= 0) continue;
-          notMin = +(1 / artificialTable[i][k]).toFixed(2);
+          if (artificialTable[i][k].s < 0 || artificialTable[i][k].n === 0)
+            continue;
+          notMin = Fraction(1).div(artificialTable[i][k]);
           if (min > notMin) {
             rowMin = i;
             colMin = k;
@@ -132,20 +139,20 @@ function setArtificialBasis(artificialTable, allParams) {
       coeff[i] = artificialTable[i][colMin];
     }
     console.log("min", { artificialTable, rowMin, colMin, min, pivot });
-    artificialTable[rowMin][colMin] = min;
+    artificialTable[rowMin][colMin] = Fraction(min);
     // Меняем столбец
     for (let i = 0; i < row; i++) {
-      if (i === rowMin) continue;
-      artificialTable[i][colMin] = +(
-        -artificialTable[i][colMin] / pivot
-      ).toFixed(2);
+      if (i === rowMin || pivot.n === 0) continue;
+      artificialTable[i][colMin] = Fraction(artificialTable[i][colMin])
+        .div(pivot)
+        .mul(-1);
     }
     // Меняем строчку
     for (let i = 0; i < column; i++) {
-      if (i === colMin) continue;
-      artificialTable[rowMin][i] = +(
-        artificialTable[rowMin][i] / pivot
-      ).toFixed(2);
+      if (i === colMin || pivot.n === 0) continue;
+      artificialTable[rowMin][i] = Fraction(artificialTable[rowMin][i]).div(
+        pivot
+      );
     }
 
     // Меняем переменные (для отрисовки потом)
@@ -175,10 +182,9 @@ function setArtificialBasis(artificialTable, allParams) {
       if (i === rowMin) continue;
       for (let j = 0; j < column; j++) {
         if (j === colMin) continue;
-        artificialTable[i][j] = +(
-          artificialTable[i][j] -
-          coeff[i] * artificialTable[rowMin][j]
-        ).toFixed(2);
+        artificialTable[i][j] = Fraction(artificialTable[i][j]).sub(
+          Fraction(coeff[i]).mul(artificialTable[rowMin][j])
+        );
       }
     }
     // console.log("before splice:", { artificialTable });
@@ -203,33 +209,33 @@ function setAfterArtificial(table, allParams, func, countVariables) {
   let notBasis = [];
   allParams[0].map((e) => basis.push(e.num));
   allParams[1].map((e) => notBasis.push(e.num));
-  let boolean = false;
-  let boolean2 = false;
   let num = -1;
   // формируем коэфициенты f(x)
   for (let i = 0; i < countVariables; i++) {
     if (basis[i] !== undefined) {
       num = basis[i];
       for (let j = 0; j <= last; j++)
-        arrTable[beforeCount][j] = table[beforeCount][j] * -func[num]; // -func[i], потому что мы выражаем 1 переменную через другие, и при переносе знак меняется
-      arrTable[beforeCount][last] = table[beforeCount][last] * func[num]; // т.к. в выше мы все умножили на -1, но константа остается за =, поэтому её не умножаем на -1
+        arrTable[beforeCount][j] = Fraction(table[beforeCount][j]).mul(
+          -func[num]
+        ); // -func[i], потому что мы выражаем 1 переменную через другие, и при переносе знак меняется
+      arrTable[beforeCount][last] = Fraction(table[beforeCount][last]).mul(
+        func[num]
+      ); // т.к. в выше мы все умножили на -1, но константа остается за =, поэтому её не умножаем на -1
       beforeCount++;
     } // Записываем свободные переменные в массив, чтобы потом их суммировать и получить mylittlepony[]
     else if (notBasis[newCount] !== undefined) {
       num = notBasis[newCount];
       for (let j = 0; j <= last; j++) {
-        arrTable[beforeCount][j] = 0;
+        arrTable[beforeCount][j] = Fraction(0);
       }
-      arrTable[beforeCount][newCount] = func[num];
+      arrTable[beforeCount][newCount] = Fraction(func[num]);
       newCount++;
       beforeCount++;
     } else {
       for (let j = 0; j <= last; j++) {
-        arrTable[i][j] = 0;
+        arrTable[i][j] = Fraction(0);
       }
     }
-    boolean = false;
-    boolean2 = false;
     num = -1;
   }
   return arrTable;

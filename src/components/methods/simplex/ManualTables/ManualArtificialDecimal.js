@@ -5,10 +5,10 @@ var Fraction = require("fraction.js");
 
 function returnFraction(num) {
   if (num.n !== 0 || num.d !== null)
-    return Fraction(num.n).div(num.d).mul(num.s).toFraction();
+    return Fraction(num.n).div(num.d).mul(num.s).toString();
   else return 0;
 }
-export default function ManualTables(props) {
+export default function ManualTablesDecimal(props) {
   let table = [];
   let restr = [];
   let simplex = [];
@@ -133,6 +133,7 @@ export default function ManualTables(props) {
           }
         }
         table.push(<tr>{[...r]}</tr>);
+        // TODO: Фикс блять этой хуйни (повторное нажатие на решение)
 
         if (simParam.select !== undefined)
           simParam.select.style.backgroundColor = "blue";
@@ -145,36 +146,6 @@ export default function ManualTables(props) {
           <table>{table}</table>
         </>
       );
-      if (rowMin === -1 && simMaybe === undefined) {
-        let x = [];
-
-        // записываем все элементы
-        for (
-          let i = 0;
-          i <
-          simHistory[0].simplexTable.length +
-            simHistory[0].simplexTable[0].length -
-            2;
-          i++
-        ) {
-          x[i] = 0;
-          simAllParams[0].map(
-            (el) =>
-              (x[el.num] = returnFraction(
-                simplexTable[el.row][simplexTable[0].length - 1]
-              ))
-          );
-        }
-        simplex.push(
-          <div>
-            Ответ: f(x) = {simParam.f}, x* = (
-            {x.map((e) => (
-              <>{e},</>
-            ))}
-            )
-          </div>
-        );
-      }
       return 0;
     });
   }
@@ -277,7 +248,6 @@ export default function ManualTables(props) {
         }
         table.push(<tr>{[...r]}</tr>);
         // TODO: Фикс блять этой хуйни (повторное нажатие на решение)
-
         if (artParam.select !== undefined)
           artParam.select.style.backgroundColor = "blue";
       }

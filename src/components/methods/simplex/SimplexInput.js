@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "../simplex.css";
 import { Button, Form, InputNumber, Select } from "antd";
 import startSolution from "./simplexAlgorithm";
 import Title from "antd/lib/typography/Title";
 import { ExperimentOutlined, HighlightOutlined } from "@ant-design/icons";
 import Checkbox from "antd/lib/checkbox/Checkbox";
+import FirstSimplex from "./ManualSimplex";
 
 const { Option } = Select;
 
@@ -16,12 +17,56 @@ function SimplexInput(props) {
   const [restrictions, setRestrictions] = useState([]);
   const [wInputs, setWIntputs] = useState(70);
   const [basises, setBasises] = useState([]);
-
+  const helpBasises = useRef([]);
   let tags = [];
   let restr = [];
   let r = [];
   let table = [];
-  function onStartSolution() {
+  function onStartSolution(param) {
+    preCase();
+    props.setSimplexTable([]);
+    switch (param) {
+      case "auto":
+        let copy = JSON.parse(
+          JSON.stringify(
+            startSolution(
+              countVariables,
+              func,
+              countRestrictions,
+              restrictions,
+              minMax,
+              helpBasises.current
+            )
+          )
+        );
+
+        props.setSimplexTable([...copy]);
+        props.setManualSimplexTable([]);
+        break;
+      case "manual":
+        let history = JSON.parse(
+          JSON.stringify(
+            // тут надо ручное
+            FirstSimplex(
+              countVariables,
+              func,
+              countRestrictions,
+              restrictions,
+              minMax,
+              helpBasises.current
+            )
+          )
+        );
+        props.setManualSimplexTable([...history]);
+        break;
+      default:
+        props.setSimplexTable([]);
+        props.setManualSimplexTable([]);
+        break;
+    }
+  }
+
+  function preCase() {
     for (let i = 0; i < countRestrictions; i++) {
       for (let j = 0; j < countVariables + 1; j++) {
         if (!restrictions[i]) restrictions[i] = [];
@@ -35,24 +80,19 @@ function SimplexInput(props) {
     }
     // нет ререндера, но все работает ЧОТКО
     // TODO: надо пофиксить баг с тем, что после выбора последнего элемента и повторного нажатия он не попадает в массив базисных
-    setBasises(basises.slice(0, countVariables - 1));
-    for (let i = 0; i < countVariables; i++) {
-      basises[i] = !basises[i] ? false : true;
+    if (helpBasises.current !== undefined) {
+      if (helpBasises.current.length !== 0)
+        setBasises(helpBasises.current.slice(0, countVariables - 1));
+    } else {
+      alert("Выберите базисные переменные");
+      throw new Error("Выберите базисные переменные");
     }
-    console.log("basiseeees:", basises);
-    let copy = JSON.parse(
-      JSON.stringify(
-        startSolution(
-          countVariables,
-          func,
-          countRestrictions,
-          restrictions,
-          minMax,
-          basises
-        )
-      )
-    );
-    props.setSimplexTable([...copy]);
+
+    for (let i = 0; i < countVariables; i++) {
+      helpBasises.current[i] = !helpBasises.current[i] ? false : true;
+    }
+    console.log("basiseeees:", helpBasises.current);
+    return;
   }
 
   function addRestrictions(i, j, value) {
@@ -145,11 +185,13 @@ function SimplexInput(props) {
   }
 
   function addArrayBasis(i, value) {
-    let old = basises;
-    console.log("old: ", old);
-    old[i] = value;
+    // let old = helpBasises.current;
+    // console.log("old: ", old);
+    // old[i] = value;
+    // helpBasises.current = old;
+    helpBasises.current[i] = value;
     setBasises([...basises]);
-    console.log("basises:", basises);
+    console.log("basises:", helpBasises.current);
   }
 
   function onBasis() {
@@ -227,7 +269,7 @@ function SimplexInput(props) {
         <Form.Item>
           <Button
             type="primary"
-            onClick={(e) => onStartSolution()}
+            onClick={(e) => onStartSolution("auto")}
             icon={<ExperimentOutlined />}
           >
             Автоматическое решение
@@ -235,7 +277,7 @@ function SimplexInput(props) {
 
           <Button
             type="primary"
-            onClick={(e) => onStartSolution()}
+            onClick={(e) => onStartSolution("manual")}
             icon={<HighlightOutlined />}
             style={{ marginLeft: "8px" }}
           >

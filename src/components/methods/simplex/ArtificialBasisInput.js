@@ -5,7 +5,6 @@ import StartArtificialSolution from "./ArtificialBasisAlgorithm.js";
 import FirstTable from "./artifcialBasis/manualArtificial";
 import Title from "antd/lib/typography/Title";
 import { ExperimentOutlined, HighlightOutlined } from "@ant-design/icons";
-import Checkbox from "antd/lib/checkbox/Checkbox";
 
 const { Option } = Select;
 
@@ -54,7 +53,7 @@ function ArtificialBasis(props) {
               countRestrictions,
               restrictions,
               minMax,
-              added.length != 0 ? added : addedRef.current
+              added.length !== 0 ? added : addedRef.current
             )
           )
         );
@@ -72,7 +71,7 @@ function ArtificialBasis(props) {
               countRestrictions,
               restrictions,
               minMax,
-              added.length != 0 ? added : addedRef.current,
+              added.length !== 0 ? added : addedRef.current,
               0,
               0,
               [],

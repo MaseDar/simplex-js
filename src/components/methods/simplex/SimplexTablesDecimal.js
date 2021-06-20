@@ -2,7 +2,7 @@ import React from "react";
 import "../simplex.css";
 var Fraction = require("fraction.js");
 
-export default function SimplexTables(props) {
+export default function SimplexTablesDecimal(props) {
   let r = [];
   let table = [];
   let restr = [];
@@ -17,7 +17,7 @@ export default function SimplexTables(props) {
 
   function returnFraction(num) {
     if (num.n !== 0 || num.d !== null)
-      return Fraction(num.n).div(num.d).mul(num.s).toFraction();
+      return Fraction(num.n).div(num.d).mul(num.s).toString();
     else return 0;
   }
 
