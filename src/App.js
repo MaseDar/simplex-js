@@ -50,7 +50,7 @@ function App() {
               <Link to="/optimizationmethods">Методы Оптимизации</Link>
             </Menu.Item>
             <Menu.Item key="2">
-              <Link to="/сomputergraphics" title="Компьютерная Графика">
+              <Link to="/computergraphics" title="Компьютерная Графика">
                 Компьютерная Графика
               </Link>
             </Menu.Item>
@@ -66,7 +66,7 @@ function App() {
           <Route path="/optimizationmethods">
             <MethodOptimize />
           </Route>
-          <Route path="/сomputergraphics">
+          <Route path="/computergraphics">
             <ComputerGraphics />
           </Route>
           <Route path="/mpea">
