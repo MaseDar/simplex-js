@@ -143,7 +143,7 @@ function setArtificialBasis(artificialTable, allParams) {
       allParams: JSON.parse(JSON.stringify(allParams)),
       pivot: { rowMin, colMin },
     });
-    if (step === row - 1 || rowMin == -1) {
+    if (step === row - 1 || rowMin === -1) {
       console.log("Конец искусственного базиса:", { allTables });
       return allTables;
     }
