@@ -95,10 +95,10 @@ function setArtificialBasis(artificialTable, allParams) {
   let lastCol = artificialTable[0].length - 1;
   let row = artificialTable.length;
   let lastRow = artificialTable.length - 1;
-  let min = 9999;
+  let min = Fraction(9999);
   let notMin = 9999;
-  let rowMin = 0,
-    colMin = 0;
+  let rowMin = -1,
+    colMin = -1;
   let pivot = Fraction(0);
   let helperParam, helperNum;
   let coeff = [];
@@ -113,8 +113,8 @@ function setArtificialBasis(artificialTable, allParams) {
     // TODO: ДЕЛАТЬ КОПИИ МАССИВОВ ИЛИ НЕТ!??! ВОТ В ЧЕМ ВОПРОС
     // Ищем минимальное неотриц из всех
 
-    rowMin = 0;
-    colMin = 0;
+    rowMin = -1;
+    colMin = -1;
     for (let k = 0; k < lastCol; k++) {
       if (artificialTable[lastRow][k].s < 0) {
         for (let i = 0; i < lastRow; i++) {
@@ -131,6 +131,7 @@ function setArtificialBasis(artificialTable, allParams) {
         }
       }
     }
+    // if (rowMin === -1)
     // let nullsum = 0;
     // for (let i = 0; i <= lastCol; i++) {
     //   nullsum += artificialTable[lastRow][i];
@@ -142,7 +143,7 @@ function setArtificialBasis(artificialTable, allParams) {
       allParams: JSON.parse(JSON.stringify(allParams)),
       pivot: { rowMin, colMin },
     });
-    if (step === row - 1) {
+    if (step === row - 1 || rowMin == -1) {
       console.log("Конец искусственного базиса:", { allTables });
       return allTables;
     }

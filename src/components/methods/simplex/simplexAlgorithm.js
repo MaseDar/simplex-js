@@ -74,7 +74,7 @@ export default function startSolution(
   let afterGauss = GaussSolution(JSON.parse(JSON.stringify(arrBasis)));
   // Выражаем переменные
   let beforeSimplex = [];
-  if (afterGauss[0] === undefined) throw new Error("аяяаяая я заебался");
+  if (afterGauss[0] === undefined) throw new Error("аяяаяая ошибка");
   for (let i = 0; i < countRestrictions; i++)
     beforeSimplex[i] = afterGauss[i].slice(count);
 

@@ -45,7 +45,7 @@ export default function FirstTable(
     helpOther = 0;
   for (let i = 0; i < added.length; i++) {
     let help = i + 1;
-    if (!!added[i] || i > countVariables) {
+    if (!!added[i] || i >= countVariables) {
       allParams[0][helpAdded] = {
         param: "x" + help,
         num: i,
