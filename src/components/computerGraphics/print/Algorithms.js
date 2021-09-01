@@ -22,7 +22,7 @@ function setPixel(x, y) {
 }
 
 // нецелочисленные
-export function lineNotInt(p1, p2) {
+export function lineNotInt(p1, p2, rec1) {
   let x = 0; // Канонический случай: начальная точка
   let y = 0; // лежит в [0, 1) (+)  [0, 1)
 
@@ -57,9 +57,18 @@ export function lineNotInt(p1, p2) {
   // величина сдвига по вертикали
   let dv = c / Math.abs(p2.y - p1.y);
   let v = 0;
-
+  let x1 = 0;
+  let y1 = 0;
   while (h < c && v < c) {
-    setPixel(x * x_mnoj + Math.round(p1.x), y * y_mnoj + Math.round(p1.y));
+    x1 = x * x_mnoj + Math.round(p1.x);
+    y1 = y * y_mnoj + Math.round(p1.y);
+    setPixel(x1, y1);
+    // context.strokeRect(
+    //   rec1.p1.x + x1,
+    //   rec1.p1.y + y1,
+    //   rec1.p2.x - rec1.p1.x + x1,
+    //   rec1.p1.y - rec1.p1.y + y1
+    // );
     if (h < v) {
       // Сдвиг по горизонтали
       x++;
@@ -72,10 +81,15 @@ export function lineNotInt(p1, p2) {
       // h = v : Вырожденный случай (см. рис. 3.5)
       // рисуем произвольный из двух возможных пикселей,
       // например, верхний:
-      setPixel(
-        x * x_mnoj + Math.round(p1.x),
-        (y + 1) * y_mnoj + Math.round(p1.y)
-      );
+      x1 = x * x_mnoj + Math.round(p1.x);
+      y1 = (y + 1) * y_mnoj + Math.round(p1.y);
+      setPixel(x1, y1);
+      // context.strokeRect(
+      //   rec1.p1.x + x1,
+      //   rec1.p1.y + y1,
+      //   rec1.p2.x - rec1.p1.x + x1,
+      //   rec1.p1.y - rec1.p1.y + y1
+      // );
       x++;
       y++;
       h += dh;
@@ -128,7 +142,12 @@ export function DirectMethod(Arr) {
 }
 
 // Линия брезенхема
-export default function BresenhamLine(x, y, x1, y1) {
+export default function BresenhamLine(p1, p2, rec) {
+  let x = Math.floor(p1.x);
+  let y = Math.floor(p1.y);
+  let x1 = Math.floor(p2.x);
+  let y1 = Math.floor(p2.y);
+
   var dx = Math.abs(x1 - x);
   var dy = Math.abs(y1 - y);
   var sx = x < x1 ? 1 : -1;
@@ -137,7 +156,12 @@ export default function BresenhamLine(x, y, x1, y1) {
 
   while (true) {
     setPixel(x, y);
-
+    context.strokeRect(
+      rec.p1.x + x,
+      rec.p1.y + y,
+      rec.p2.x - rec.p1.x + x,
+      rec.p1.y - rec.p1.y + y
+    );
     if (x === x1 && y === y1) break;
     let e2 = 2 * delta;
     if (e2 > -dy) {
@@ -378,3 +402,70 @@ function dotProduct(p1, p2) {
 
   return res;
 }
+
+export function interpol(coef) {
+  let p1 = { x: 0, y: 0 },
+    p2 = { x: 0, y: 0 },
+    p3 = { x: 0, y: 0 },
+    p4 = { x: 0, y: 0 },
+    a = { x: 0, y: 0 },
+    b = { x: 0, y: 0 },
+    c = { x: 0, y: 0 },
+    d = { x: 0, y: 0 };
+
+  p1.x = points[0].p1.x * (coef / 100);
+  p1.y = points[0].p1.y * (coef / 100);
+  p2.x = points[0].p2.x * (coef / 100);
+  p2.y = points[0].p2.y * (coef / 100);
+
+  p3.x = points[1].p1.x * (coef / 100);
+  p3.y = points[1].p1.y * (coef / 100);
+  p4.x = points[1].p2.x * (coef / 100);
+  p4.y = points[1].p2.y * (coef / 100);
+
+  let rec1 = {
+    p1,
+    p2,
+  };
+  let rec2 = {
+    p1: p3,
+    p2: p4,
+  };
+
+  a = {
+    x: p1.x,
+    y: p1.y,
+  };
+
+  b = {
+    x: p2.x,
+    y: p1.y,
+  };
+
+  c = {
+    x: p2.x,
+    y: p2.y,
+  };
+
+  d = {
+    x: p1.x,
+    y: p2.y,
+  };
+  /*
+  a___b 
+  |   |
+  -----
+  d   c
+*/
+
+  BresenhamLine(a, b, rec2);
+  BresenhamLine(b, c, rec2);
+  BresenhamLine(c, d, rec2);
+  BresenhamLine(d, a, rec2);
+}
+
+export function firstRec(p1, p2) {
+  points.push({ p1, p2 });
+  context.strokeRect(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y);
+}
+export function secondRec(p1, p2) {}

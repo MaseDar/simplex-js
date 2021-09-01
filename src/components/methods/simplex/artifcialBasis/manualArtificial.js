@@ -1,5 +1,8 @@
 import { setF } from "../simplexAlgorithm";
-import { changeFuncMinMax } from "../ArtificialBasisAlgorithm";
+import {
+  changeFuncMinMax,
+  changeNegativeTable,
+} from "../ArtificialBasisAlgorithm";
 var Fraction = require("fraction.js");
 let func = [];
 let countVariables;
@@ -19,6 +22,7 @@ export default function FirstTable(
   pivotValue = Fraction(0.000001)
 ) {
   func = changeFuncMinMax(_func, minMax);
+
   countVariables = _countVariables;
   let artNsimplex = [];
   let allParams = [[], []];
@@ -36,7 +40,7 @@ export default function FirstTable(
     lastRowTable.push(columnSum);
   }
   inputTable.push(lastRowTable);
-
+  inputTable = changeNegativeTable(inputTable);
   // перевод в дробные
   for (let i = 0; i < inputTable.length; i++)
     inputTable[i] = inputTable[i].map((el) => Fraction(el));
@@ -326,6 +330,15 @@ function setArtificialBasis(
   tableObj = {};
   rowMin = -1;
   colMin = -1;
+  // TODO: Сделать нормальные эксепшены и организацию кода...
+  for (let i = 0; i < artificialTable.length - 1; i++) {
+    if (artificialTable[i][lastCol].s < 0) {
+      alert("Введен недопустимый элемент, пожалуйста, выберите другой");
+      throw new Error(
+        "Введен недопустимый элемент, пожалуйста, выберите другой"
+      );
+    }
+  }
   for (let k = 0; k < lastCol; k++) {
     if (artificialTable[lastRow][k].s < 0) {
       for (let i = 0; i < lastRow; i++) {
@@ -529,6 +542,14 @@ export function oneSimplex(
   // Если выбрали ручной метод в первый раз, то формируем таблицу и выводим её
   rowMin = -1;
   colMin = -1;
+  for (let i = 0; i < simplexTable.length - 1; i++) {
+    if (simplexTable[i][lastCol].s < 0) {
+      alert("Введен недопустимый элемент, пожалуйста, выберите другой");
+      throw new Error(
+        "Введен недопустимый элемент, пожалуйста, выберите другой"
+      );
+    }
+  }
   for (let k = 0; k < lastCol; k++) {
     if (simplexTable[lastRow][k].s < 0) {
       for (let i = 0; i < lastRow; i++) {

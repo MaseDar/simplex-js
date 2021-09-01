@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { Row, Col, Radio, Space, InputNumber } from "antd";
+import { Row, Col, Radio, Space, InputNumber, Typography } from "antd";
 import BresenhamLine, {
   setCanvases,
   BresenhamCircle,
@@ -11,7 +11,10 @@ import BresenhamLine, {
   setPoints,
   cyrusBeck,
   lineNotInt,
+  interpol,
+  firstRec,
 } from "./print/Algorithms";
+
 function CGPage() {
   // const [value, setValue] = useState("brez");
   const [canvas, setCanvas] = useState(null);
@@ -20,6 +23,7 @@ function CGPage() {
   const value = useRef("brez");
   const bezier = useRef(3);
   const citrus = useRef(4);
+  const divide = useRef(50);
   const canvasRef = useRef(null);
   let count = 0;
   // let checker = 0;
@@ -36,6 +40,10 @@ function CGPage() {
     bezier.current = e;
   };
 
+  const changeDivide = (e) => {
+    console.log("Change value divide", e);
+    interpol(e);
+  };
   const changeCitrus = (e) => {
     console.log("change citrus:", e);
     citrus.current = e;
@@ -133,6 +141,13 @@ function CGPage() {
         // const line = { p1: { x, y }, p2: { x: x1, y: y1 } };
         cyrusBeck(x, y, x1, y1);
         break;
+      case "first":
+      case "second":
+        firstRec({ x, y }, { x: x1, y: y1 });
+        break;
+      // case "second":
+      //   secondRec({ x, y }, { x: x1, y: y1 });
+      //   break;
       default:
         alert("wooops");
     }
@@ -154,7 +169,7 @@ function CGPage() {
       </Col>
       <Col span={6} pull={18}>
         <Space direction="vertical">
-          <h3>Линии</h3>
+          {/* <h3>Линии</h3>
           <Radio.Group
             onChange={onChange}
             optionType="button"
@@ -214,9 +229,24 @@ function CGPage() {
             max={10}
             defaultValue={4}
             onChange={changeCitrus}
-          />
+          /> */}
         </Space>
+        <Typography.Title>Курсовая</Typography.Title>
+        <Radio.Group
+          onChange={onChange}
+          optionType="button"
+          buttonStyle="solid"
+        >
+          <Radio.Button value="first">Многоугольник 1</Radio.Button>
+          <Radio.Button value="second">Многоугольник 2</Radio.Button>
+        </Radio.Group>
         {/* <CGInputs setValue={setValue}/> */}
+        <InputNumber
+          min={1}
+          max={100}
+          defaultValue={50}
+          onChange={changeDivide}
+        />
       </Col>
     </Row>
   );

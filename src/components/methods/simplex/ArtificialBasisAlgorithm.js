@@ -90,6 +90,26 @@ export function changeFuncMinMax(func, minMax) {
   return arr;
 }
 
+export function changeNegativeTable(table) {
+  let last = table[0].length - 1;
+  let arr = [];
+  for (let i = 0; i < table.length - 1; i++) {
+    for (let j = 0; j < table[0].length; j++) {
+      if (table[i][last] < 0) {
+        if (arr[i] === undefined) arr[i] = [];
+        arr[i][j] = -table[i][j];
+      } else {
+        if (arr[i] === undefined) arr[i] = [];
+        arr[i][j] = table[i][j];
+      }
+    }
+  }
+  arr[table.length - 1] = [];
+  for (let i = 0; i < last + 1; i++)
+    arr[table.length - 1][i] = table[table.length - 1][i];
+  return arr;
+}
+
 function setArtificialBasis(artificialTable, allParams) {
   let column = artificialTable[0].length;
   let lastCol = artificialTable[0].length - 1;
