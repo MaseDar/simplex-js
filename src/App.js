@@ -25,7 +25,7 @@ import {
 import Simplex from "./components/methods/simplex/Simplex";
 import ArtificialBasis from "./components/methods/simplex/ArtificialBasis";
 import Dev from "./components/Dev";
-import CGPage from "./components/computerGraphics/CGPage";
+import Page from "./components/computerGraphics/Course/Page";
 import UlamSpiral from "./components/volch/UlamSpiral";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -130,7 +130,8 @@ function ComputerGraphics() {
         <Content style={{ padding: "0 24px", minHeight: "75vh" }}>
           <Switch>
             <Route exact path={`${match.url}/dashboard`}>
-              <CGPage />
+              {/* <CGPage /> */}
+              <Page />
             </Route>
             <Route exact path={`${match.url}/help`}>
               <Dev />

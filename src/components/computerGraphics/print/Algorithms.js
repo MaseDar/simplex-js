@@ -174,6 +174,7 @@ export default function BresenhamLine(p1, p2, rec) {
     }
   }
 }
+
 // Цифровой анализатор
 export function DDA(x0, y0, x1, y1) {
   const dx = x1 - x0,
