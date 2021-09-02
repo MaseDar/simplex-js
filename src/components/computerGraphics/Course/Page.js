@@ -1,5 +1,13 @@
 import React, { useRef, useEffect, useState } from "react";
-import { Row, Col, Radio, Space, InputNumber, Typography } from "antd";
+import {
+  Row,
+  Col,
+  Radio,
+  Space,
+  InputNumber,
+  Typography,
+  Checkbox,
+} from "antd";
 import printFirst, { interpol, printSecond, setCanvases } from "./Alg";
 
 function Page() {
@@ -10,13 +18,19 @@ function Page() {
   const second = useRef(4);
   const repeat = useRef(50);
   const canvasRef = useRef(null);
-
+  const only = useRef(false);
+  const only2 = useRef(false);
   let points = [];
 
   const onChange = (e) => {
     console.log("radio checked", e.target.value);
-
     value.current = e.target.value;
+  };
+  const onChangeCheck = (e) => {
+    only.current = e.target.checked;
+  };
+  const onChangeCheck2 = (e) => {
+    only2.current = e.target.checked;
   };
 
   const changeFirst = (e) => {
@@ -32,7 +46,7 @@ function Page() {
 
   const changeDivide = (e) => {
     console.log("Change value divide", e);
-    interpol(e, repeat.current);
+    interpol(e, repeat.current, only.current, only2.current);
   };
 
   function mouseDown(e) {
@@ -109,6 +123,12 @@ function Page() {
           Как часто рисовать интерполяцию (чем меньше значение, чем дольше
           прорисовывается)
           <InputNumber min={1} defaultValue={50} onChange={changeRepeat} />
+          <Checkbox onChange={onChangeCheck2}>
+            Рисовать только 1 Многоугольник
+          </Checkbox>
+          <Checkbox onChange={onChangeCheck}>
+            Рисовать только 2 Многоугольник
+          </Checkbox>
         </Space>
       </Col>
     </Row>

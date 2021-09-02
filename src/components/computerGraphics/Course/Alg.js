@@ -148,12 +148,21 @@ function setPixel(x, y) {
   p.data[3] = 255;
   context.putImageData(p, x, y);
 }
-export function interpol(coef, repeat) {
-  let arr1 = minDot(points1);
-  arr1 = divide(arr1, 100 - coef);
-  let arr2 = minDot(points2);
-  arr2 = divide2(arr2, coef);
-  print2(arr2, arr1, repeat);
+export function interpol(coef, repeat, only2, only) {
+  if (only2) {
+    c1 = center(points1);
+    let arr2 = minDot(points2);
+    print(divide2(arr2, coef));
+  } else if (only) {
+    let arr1 = minDot(points2);
+    print(divide(arr1, coef));
+  } else {
+    let arr1 = minDot(points1);
+    arr1 = divide(arr1, 100 - coef);
+    let arr2 = minDot(points2);
+    arr2 = divide2(arr2, coef);
+    print2(arr2, arr1, repeat);
+  }
 }
 
 // Линия брезенхема
