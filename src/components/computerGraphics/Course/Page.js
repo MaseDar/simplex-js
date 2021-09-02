@@ -38,8 +38,8 @@ function Page(params) {
     // check()
     var rect = canvas.getBoundingClientRect();
     points[points.length] = {};
-    points[points.length].x = Math.floor(e.clientX - rect.left);
-    points[points.length].y = Math.floor(e.clientY - rect.top);
+    points[points.length - 1].x = Math.floor(e.clientX - rect.left);
+    points[points.length - 1].y = Math.floor(e.clientY - rect.top);
     console.log("points length", points.length);
     console.log({ points, first, second });
   }

@@ -1,30 +1,125 @@
 let points1 = [];
 let points2 = [];
 let context;
+let c1, c2;
 export function setCanvases(new_context) {
   context = new_context;
 }
 
-export default function printFirst(points) {
+export default function printFirst(points, coef) {
   points1 = points;
-  for (let i = 0; i < points1.length; i++) {
-    if (i === points1.length - 1) {
-      line(points1[i], points1[0]);
-    } else {
-      line(points1[i], points1[i + 1]);
-    }
-  }
+  print(points1);
+  points1 = minDot(points1);
+  print(divide(points1, 50));
 }
 
 export function printSecond(points) {
   points2 = points;
-  for (let i = 0; i < points2.length; i++) {
-    if (i === points2.length - 1) {
-      line(points1[i], points1[0]);
+  print(points2);
+  points2 = minDot(points2);
+  print(divide2(points2, 50));
+}
+
+function divide2(polygon, coef) {
+  let c2 = center(polygon);
+  let poly = [];
+  let little2 = [];
+  polygon.map((p) =>
+    poly.push({
+      x: p.x * (coef / 100),
+      y: p.y * (coef / 100),
+    })
+  );
+  print(poly);
+
+  let c2_1 = center(poly);
+  poly.map((p) => {
+    let help = {
+      x: dist2dot(c2, c1).x * (coef / 100),
+      y: dist2dot(c2, c1).y * (coef / 100),
+    };
+    little2.push({
+      x: p.x + sum(dist2dot(c1, c2_1), help).x,
+      y: p.y + sum(dist2dot(c1, c2_1), help).y,
+    });
+    // little2.push({
+    //   x: p.x + help.x,
+    //   y: p.y + help.y,
+    // });
+    return p;
+  });
+  return little2;
+}
+
+function sum(p1, p2) {
+  return { x: p1.x + p2.x, y: p1.y + p2.y };
+}
+// маленький полигон
+function divide(polygon, coef) {
+  c1 = center(polygon);
+  let poly = [];
+  let newCoords = [];
+  polygon.map((p) =>
+    poly.push({
+      x: p.x * (coef / 100),
+      y: p.y * (coef / 100),
+    })
+  );
+  print(poly);
+  let c1_1 = center(poly);
+  polygon.map((p) =>
+    newCoords.push({
+      x: p.x * (coef / 100) + dist2dot(c1, c1_1).x,
+      y: p.y * (coef / 100) + dist2dot(c1, c1_1).y,
+    })
+  );
+  return newCoords;
+}
+
+function print(poly) {
+  for (let i = 0; i < poly.length; i++) {
+    if (i === poly.length - 1) {
+      line(poly[i], poly[0]);
     } else {
-      line(points2[i], points2[i + 1]);
+      line(poly[i], poly[i + 1]);
     }
   }
+}
+
+function center(polygon) {
+  let c = { x: 0, y: 0 };
+  polygon.map((p) => {
+    c.x += p.x;
+    c.y += p.y;
+    return p;
+  });
+  c.x = c.x / polygon.length;
+  c.y = c.y / polygon.length;
+  return c;
+}
+
+function dist2dot(p1, p2) {
+  return { x: p1.x - p2.x, y: p1.y - p2.y };
+}
+
+function dist(p) {
+  return Math.sqrt(p.x * p.x + p.y * p.y);
+}
+
+function minDot(polygon) {
+  let c = { x: polygon[0].x, y: polygon[0].y };
+  let idx = 0;
+  polygon.map((p, index) => {
+    if (dist(p) < dist(c)) {
+      c = p;
+      idx = index;
+    }
+    return p;
+  });
+
+  let newpol = polygon.slice(idx);
+  newpol.push(...polygon.slice(0, idx));
+  return newpol;
 }
 
 function setPixel(x, y) {
