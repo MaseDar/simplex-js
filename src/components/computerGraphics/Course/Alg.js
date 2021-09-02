@@ -1,7 +1,7 @@
 let points1 = [];
 let points2 = [];
 let context;
-let c1, c2;
+let c1;
 export function setCanvases(new_context) {
   context = new_context;
 }
@@ -9,15 +9,23 @@ export function setCanvases(new_context) {
 export default function printFirst(points, coef) {
   points1 = points;
   print(points1);
-  points1 = minDot(points1);
-  print(divide(points1, 50));
 }
 
 export function printSecond(points) {
   points2 = points;
   print(points2);
-  points2 = minDot(points2);
-  print(divide2(points2, 50));
+}
+
+function finish(polygon, dot) {
+  let c1_1 = center(polygon);
+  let help = [];
+  polygon.map((p) =>
+    help.push({
+      x: p.x + dist2dot(dot, c1_1).x,
+      y: p.y + dist2dot(dot, c1_1).y,
+    })
+  );
+  return print(help);
 }
 
 function divide2(polygon, coef) {
@@ -30,7 +38,7 @@ function divide2(polygon, coef) {
       y: p.y * (coef / 100),
     })
   );
-  print(poly);
+  // print(poly);
 
   let c2_1 = center(poly);
   poly.map((p) => {
@@ -65,7 +73,7 @@ function divide(polygon, coef) {
       y: p.y * (coef / 100),
     })
   );
-  print(poly);
+  // print(poly);
   let c1_1 = center(poly);
   polygon.map((p) =>
     newCoords.push({
@@ -82,6 +90,16 @@ function print(poly) {
       line(poly[i], poly[0]);
     } else {
       line(poly[i], poly[i + 1]);
+    }
+  }
+}
+
+function print2(poly2, poly1, repeat) {
+  for (let i = 0; i < poly2.length; i++) {
+    if (i === poly2.length - 1) {
+      line2(poly2[i], poly2[0], poly1, repeat);
+    } else {
+      line2(poly2[i], poly2[i + 1], poly1, repeat);
     }
   }
 }
@@ -130,7 +148,13 @@ function setPixel(x, y) {
   p.data[3] = 255;
   context.putImageData(p, x, y);
 }
-export function interpol(e) {}
+export function interpol(coef, repeat) {
+  let arr1 = minDot(points1);
+  arr1 = divide(arr1, 100 - coef);
+  let arr2 = minDot(points2);
+  arr2 = divide2(arr2, coef);
+  print2(arr2, arr1, repeat);
+}
 
 // Линия брезенхема
 function line(p1, p2) {
@@ -160,7 +184,7 @@ function line(p1, p2) {
   }
 }
 
-function line2(p1, p2, rec) {
+function line2(p1, p2, poly, repeat) {
   let x = Math.floor(p1.x);
   let y = Math.floor(p1.y);
   let x1 = Math.floor(p2.x);
@@ -171,15 +195,11 @@ function line2(p1, p2, rec) {
   var sx = x < x1 ? 1 : -1;
   var sy = y < y1 ? 1 : -1;
   var delta = dx - dy;
+  let i = 0;
 
   while (true) {
     setPixel(x, y);
-    context.strokeRect(
-      rec.p1.x + x,
-      rec.p1.y + y,
-      rec.p2.x - rec.p1.x + x,
-      rec.p1.y - rec.p1.y + y
-    );
+    if (i % repeat === 0) finish(poly, { x, y });
     if (x === x1 && y === y1) break;
     let e2 = 2 * delta;
     if (e2 > -dy) {
@@ -190,5 +210,6 @@ function line2(p1, p2, rec) {
       delta += dx;
       y += sy;
     }
+    i++;
   }
 }

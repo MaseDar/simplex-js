@@ -50,8 +50,8 @@ function App() {
               <Link to="/optimizationmethods">Методы Оптимизации</Link>
             </Menu.Item>
             <Menu.Item key="2">
-              <Link to="/computergraphics" title="Компьютерная Графика">
-                Компьютерная Графика
+              <Link to="/courseiterpol" title="Курсовая работа">
+                Курсовая работа
               </Link>
             </Menu.Item>
             <Menu.Item key="3">
@@ -66,7 +66,7 @@ function App() {
           <Route path="/optimizationmethods">
             <MethodOptimize />
           </Route>
-          <Route path="/computergraphics">
+          <Route path="/courseiterpol">
             <ComputerGraphics />
           </Route>
           <Route path="/mpea">
@@ -91,10 +91,6 @@ function ComputerGraphics() {
 
   return (
     <Content style={{ padding: "0 50px" }}>
-      <Breadcrumb style={{ margin: "16px 0" }}>
-        <Breadcrumb.Item>Компьютерная Графика</Breadcrumb.Item>
-        <Breadcrumb.Item>Алгоритмы</Breadcrumb.Item>
-      </Breadcrumb>
       <Layout className="site-layout-background" style={{ padding: "24px 0" }}>
         <Sider
           collapsed={collapsed}

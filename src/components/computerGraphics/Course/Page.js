@@ -2,15 +2,14 @@ import React, { useRef, useEffect, useState } from "react";
 import { Row, Col, Radio, Space, InputNumber, Typography } from "antd";
 import printFirst, { interpol, printSecond, setCanvases } from "./Alg";
 
-function Page(params) {
+function Page() {
   const [canvas, setCanvas] = useState(null);
   const [context, setContext] = useState(null);
   const value = useRef("first");
   const first = useRef(4);
   const second = useRef(4);
-  const divide = useRef(50);
+  const repeat = useRef(50);
   const canvasRef = useRef(null);
-  let count = 0;
 
   let points = [];
 
@@ -23,6 +22,9 @@ function Page(params) {
   const changeFirst = (e) => {
     first.current = e;
   };
+  const changeRepeat = (e) => {
+    repeat.current = e;
+  };
 
   const changeSecond = (e) => {
     second.current = e;
@@ -30,7 +32,7 @@ function Page(params) {
 
   const changeDivide = (e) => {
     console.log("Change value divide", e);
-    interpol(e);
+    interpol(e, repeat.current);
   };
 
   function mouseDown(e) {
@@ -45,12 +47,12 @@ function Page(params) {
   }
 
   function mouseUp(e) {
-    if (points.length === first.current && value.current == "first") {
+    if (points.length === first.current && value.current === "first") {
       printFirst(points);
       points = [];
       first.current = 0;
       console.log({ points, first, second });
-    } else if (points.length === second.current && value.current == "second") {
+    } else if (points.length === second.current && value.current === "second") {
       printSecond(points);
       points = [];
       second.current = 0;
@@ -83,26 +85,30 @@ function Page(params) {
             <Radio.Button value="first">Многоугольник 1</Radio.Button>
             <Radio.Button value="second">Многоугольник 2</Radio.Button>
           </Radio.Group>
-          1
+          Количество углов 1
           <InputNumber
             min={2}
-            max={5}
+            max={15}
             defaultValue={4}
             onChange={changeFirst}
           />
-          2
+          Количество углов 2
           <InputNumber
             min={2}
-            max={5}
+            max={15}
             defaultValue={4}
             onChange={changeSecond}
           />
+          t (от 1 до 100)
           <InputNumber
             min={1}
             max={100}
             defaultValue={50}
             onChange={changeDivide}
           />
+          Как часто рисовать интерполяцию (чем меньше значение, чем дольше
+          прорисовывается)
+          <InputNumber min={1} defaultValue={50} onChange={changeRepeat} />
         </Space>
       </Col>
     </Row>
